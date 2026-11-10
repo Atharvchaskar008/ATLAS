@@ -1,177 +1,80 @@
 import React from 'react';
-import { ShieldCheck, Sparkles, FileText, Activity, Layers, MapPin, LayoutDashboard, Globe } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 interface NavbarProps {
-  onOpenReport: () => void;
-  onSelectPreset: (presetName: string) => void;
-  currentLocality: string;
   viewMode: 'landing' | 'dashboard';
   onViewChange: (view: 'landing' | 'dashboard') => void;
+  onOpenReport?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  onOpenReport,
-  onSelectPreset,
-  currentLocality,
   viewMode,
   onViewChange,
+  onOpenReport,
 }) => {
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-800 bg-[#070B12]/90 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-3">
-          {/* Brand Logo & Identity */}
-          <div
-            onClick={() => onViewChange('landing')}
-            className="flex items-center space-x-3 cursor-pointer group"
-          >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 p-0.5 shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 transition-all">
-              <div className="w-full h-full bg-[#0B0F17] rounded-[10px] flex items-center justify-center">
-                <Layers className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="font-extrabold text-xl tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
-                  A.T.L.A.S.
-                </span>
-                <span className="px-1.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded">
-                  Maharashtra Engine
-                </span>
-              </div>
-              <p className="text-[10px] text-slate-400 hidden sm:block">
-                Automated Terrain & Asset Location Assessment System (Statewide Coverage)
-              </p>
-            </div>
-          </div>
+    <header className="sticky top-0 z-50 bg-white border-b border-black">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        {/* Brand */}
+        <div
+          onClick={() => onViewChange('landing')}
+          className="cursor-pointer flex items-center space-x-3 select-none"
+        >
+          <span className="font-display font-extrabold text-2xl tracking-tighter text-black">
+            ATLAS
+          </span>
+          <span className="hidden sm:inline-block text-[11px] font-mono uppercase tracking-widest text-neutral-500 pl-3 border-l border-neutral-300">
+            Valuation Engine
+          </span>
+        </div>
 
-          {/* Navigation View Switcher (Landing vs Dashboard) */}
-          <div className="flex items-center space-x-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
-            <button
-              onClick={() => onViewChange('landing')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                viewMode === 'landing'
-                  ? 'bg-emerald-500 text-slate-950 shadow-sm shadow-emerald-500/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <Globe className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Overview</span>
-            </button>
+        {/* Navigation Links */}
+        <nav className="flex items-center space-x-6 sm:space-x-8 text-sm font-medium">
+          <button
+            onClick={() => onViewChange('landing')}
+            className={`transition-colors text-xs uppercase tracking-wider font-semibold ${
+              viewMode === 'landing' ? 'text-black underline underline-offset-4' : 'text-neutral-500 hover:text-black'
+            }`}
+          >
+            Overview
+          </button>
+          
+          <button
+            onClick={() => onViewChange('dashboard')}
+            className={`transition-colors text-xs uppercase tracking-wider font-semibold ${
+              viewMode === 'dashboard' ? 'text-black underline underline-offset-4' : 'text-neutral-500 hover:text-black'
+            }`}
+          >
+            Engine
+          </button>
+
+          <a
+            href="https://github.com/Atharvchaskar008/ATLAS"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:flex items-center gap-1 text-xs uppercase tracking-wider text-neutral-500 hover:text-black font-semibold transition-colors"
+          >
+            <span>Source</span>
+            <ArrowUpRight className="w-3 h-3" />
+          </a>
+
+          {/* Action CTA */}
+          {viewMode === 'landing' ? (
             <button
               onClick={() => onViewChange('dashboard')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                viewMode === 'dashboard'
-                  ? 'bg-emerald-500 text-slate-950 shadow-sm shadow-emerald-500/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
+              className="bg-black text-white hover:bg-neutral-800 text-xs uppercase tracking-wider font-bold px-4 py-2 border border-black transition-all active:translate-y-0.5"
             >
-              <LayoutDashboard className="w-3.5 h-3.5" />
-              <span>Engine</span>
+              Launch Dashboard
             </button>
-          </div>
-
-          {/* Quick Statewide Presets */}
-          <div className="hidden xl:flex items-center space-x-1.5 bg-slate-900/80 p-1 rounded-xl border border-slate-800 overflow-x-auto">
-            <span className="px-2 text-xs font-medium text-slate-400 flex items-center gap-1 whitespace-nowrap">
-              <MapPin className="w-3 h-3 text-cyan-400" /> Presets:
-            </span>
+          ) : (
             <button
-              onClick={() => {
-                onSelectPreset('Moshi Jal Vayu Vihar');
-                if (viewMode !== 'dashboard') onViewChange('dashboard');
-              }}
-              className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
-                currentLocality.includes('Moshi')
-                  ? 'bg-emerald-500 text-slate-950 font-semibold shadow-sm shadow-emerald-500/30'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
+              onClick={() => onViewChange('landing')}
+              className="border border-black text-black hover:bg-black hover:text-white text-xs uppercase tracking-wider font-bold px-4 py-2 transition-all active:translate-y-0.5"
             >
-              Moshi (Pune)
+              Back to Overview
             </button>
-            <button
-              onClick={() => {
-                onSelectPreset('Bandra West');
-                if (viewMode !== 'dashboard') onViewChange('dashboard');
-              }}
-              className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
-                currentLocality.includes('Bandra')
-                  ? 'bg-emerald-500 text-slate-950 font-semibold shadow-sm shadow-emerald-500/30'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              Bandra (Mumbai)
-            </button>
-            <button
-              onClick={() => {
-                onSelectPreset('Powai Hiranandani');
-                if (viewMode !== 'dashboard') onViewChange('dashboard');
-              }}
-              className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
-                currentLocality.includes('Powai')
-                  ? 'bg-emerald-500 text-slate-950 font-semibold shadow-sm shadow-emerald-500/30'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              Powai (MMR)
-            </button>
-            <button
-              onClick={() => {
-                onSelectPreset('Thane West');
-                if (viewMode !== 'dashboard') onViewChange('dashboard');
-              }}
-              className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
-                currentLocality.includes('Thane')
-                  ? 'bg-emerald-500 text-slate-950 font-semibold shadow-sm shadow-emerald-500/30'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              Thane
-            </button>
-            <button
-              onClick={() => {
-                onSelectPreset('Nashik Gangapur');
-                if (viewMode !== 'dashboard') onViewChange('dashboard');
-              }}
-              className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
-                currentLocality.includes('Nashik')
-                  ? 'bg-emerald-500 text-slate-950 font-semibold shadow-sm shadow-emerald-500/30'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              Nashik
-            </button>
-            <button
-              onClick={() => {
-                onSelectPreset('Nagpur Dharampeth');
-                if (viewMode !== 'dashboard') onViewChange('dashboard');
-              }}
-              className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
-                currentLocality.includes('Nagpur')
-                  ? 'bg-emerald-500 text-slate-950 font-semibold shadow-sm shadow-emerald-500/30'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              Nagpur
-            </button>
-          </div>
-
-          {/* Right Action Buttons */}
-          <div className="flex items-center space-x-3">
-            <div className="hidden lg:flex items-center space-x-2 px-3 py-1 bg-slate-900 border border-slate-800 rounded-full text-xs text-slate-300">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="font-mono text-[11px] text-slate-400">IGR 2024-26 Anchor</span>
-            </div>
-
-            <button
-              onClick={onOpenReport}
-              className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold text-xs tracking-wide shadow-md shadow-emerald-500/20 transition-all active:scale-95 whitespace-nowrap"
-            >
-              <FileText className="w-4 h-4 text-slate-950" />
-              <span>Valuation Memo</span>
-            </button>
-          </div>
-        </div>
+          )}
+        </nav>
       </div>
     </header>
   );
