@@ -7,9 +7,15 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['"Space Grotesk"', 'sans-serif'],
+        amber: ['"Amber"', '"Albert Sans"', '"Plus Jakarta Sans"', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', '"Albert Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Space Grotesk"', '"Amber"', '"Plus Jakarta Sans"', 'sans-serif'],
         mono: ['"Space Mono"', 'monospace'],
+      },
+      borderRadius: {
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+        '4xl': '2rem',
       },
       colors: {
         neutral: {

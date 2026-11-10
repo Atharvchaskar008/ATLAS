@@ -286,42 +286,14 @@ Return ONLY valid JSON.
     # 2. Run deterministic valuation
     val_data = engine.estimate_valuation(extracted_prop)
 
-    # 3. Generate Gemini conversational response
-    ai_reply = ""
-    if gemini_key:
-        try:
-            client = genai.Client(api_key=gemini_key)
-            reply_prompt = f"""
-The user inquired: "{msg}"
-Based on our deterministic valuation engine, here are the calculated facts:
-- Location: {val_data['property_summary']['locality']}, District: {val_data['property_summary']['district']}
-- Specs: {val_data['property_summary']['bhk']} BHK ({val_data['property_summary']['carpet_sqft']} sq.ft), Floor {val_data['property_summary']['floor']}/{val_data['property_summary']['total_floors']}, Age {val_data['property_summary']['age_years']} yrs
-- Fair Market Value: ₹{val_data['estimated_value_lakhs']} Lakhs (Corridor: ₹{val_data['value_range_lakhs']['min']}L – ₹{val_data['value_range_lakhs']['max']}L)
-- Rate: ₹{val_data['rate_per_sqft_carpet']:,}/sq.ft
-- Maharashtra Ready Reckoner (ASR) Benchmark: ₹{val_data['government_benchmark']['government_floor_value_lakhs']} Lakhs (ASR Rate: ₹{val_data['government_benchmark']['ready_reckoner_rate_carpet']:,}/sq.ft)
-- Statutory Stamp Duty: ₹{val_data['government_benchmark']['stamp_duty_estimate_lakhs']} Lakhs
-- Nearest Transit: {val_data['geospatial_scores']['nearest_metro_km']} km
-
-Write a concise, professional 3-4 sentence appraisal summary responding directly to the user. State clearly whether the property is fair value, its statutory circle rate anchor, and key advice for negotiations. Do not alter any numbers.
-"""
-            resp2 = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=reply_prompt,
-                config=types.GenerateContentConfig(temperature=0.3)
-            )
-            if resp2 and resp2.text:
-                ai_reply = resp2.text.strip()
-        except Exception:
-            pass
-
-    if not ai_reply:
-        ai_reply = (
-            f"Based on our Maharashtra valuation engine, this {extracted_prop['bhk']} BHK ({extracted_prop['carpet_sqft']} sq.ft) in "
-            f"{val_data['property_summary']['locality']} has an estimated Fair Market Value of ₹{val_data['estimated_value_lakhs']} Lakhs "
-            f"(negotiation corridor: ₹{val_data['value_range_lakhs']['min']}L – ₹{val_data['value_range_lakhs']['max']}L), "
-            f"reflecting a rate of ₹{val_data['rate_per_sqft_carpet']:,}/sq.ft. "
-            f"The official Maharashtra Ready Reckoner floor value is ₹{val_data['government_benchmark']['government_floor_value_lakhs']} Lakhs."
-        )
+    # 3. Formulate concise, institutional appraisal summary
+    ai_reply = (
+        f"For your {extracted_prop['bhk']} BHK ({extracted_prop['carpet_sqft']:.0f} sq.ft) in "
+        f"{val_data['property_summary']['locality']}, the engine assesses a Fair Market Value of "
+        f"₹{val_data['estimated_value_lakhs']:.2f} Lakhs (Corridor: ₹{val_data['value_range_lakhs']['min']:.2f}L – ₹{val_data['value_range_lakhs']['max']:.2f}L), "
+        f"reflecting ₹{val_data['rate_per_sqft_carpet']:,}/sq.ft. "
+        f"Official Maharashtra Ready Reckoner circle floor is ₹{val_data['government_benchmark']['government_floor_value_lakhs']:.2f} Lakhs."
+    )
 
     return {
         "parsed_property": extracted_prop,

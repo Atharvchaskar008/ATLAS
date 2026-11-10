@@ -10,21 +10,23 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   viewMode,
   onViewChange,
-  onOpenReport,
 }) => {
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-black">
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-neutral-200">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Brand */}
         <div
           onClick={() => onViewChange('landing')}
           className="cursor-pointer flex items-center space-x-3 select-none"
         >
-          <span className="font-display font-extrabold text-2xl tracking-tighter text-black">
+          <div className="w-8 h-8 rounded-xl bg-neutral-900 flex items-center justify-center text-white font-display font-extrabold text-sm tracking-tighter">
+            A
+          </div>
+          <span className="font-display font-bold text-xl tracking-tight text-neutral-900">
             ATLAS
           </span>
-          <span className="hidden sm:inline-block text-[11px] font-mono uppercase tracking-widest text-neutral-500 pl-3 border-l border-neutral-300">
-            Valuation Engine
+          <span className="hidden sm:inline-block text-[11px] font-sans font-medium text-neutral-500 pl-3 border-l border-neutral-200">
+            Real Estate Valuation
           </span>
         </div>
 
@@ -32,8 +34,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         <nav className="flex items-center space-x-6 sm:space-x-8 text-sm font-medium">
           <button
             onClick={() => onViewChange('landing')}
-            className={`transition-colors text-xs uppercase tracking-wider font-semibold ${
-              viewMode === 'landing' ? 'text-black underline underline-offset-4' : 'text-neutral-500 hover:text-black'
+            className={`transition-colors text-xs font-semibold ${
+              viewMode === 'landing' ? 'text-neutral-900 font-bold' : 'text-neutral-500 hover:text-neutral-900'
             }`}
           >
             Overview
@@ -41,20 +43,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           
           <button
             onClick={() => onViewChange('dashboard')}
-            className={`transition-colors text-xs uppercase tracking-wider font-semibold ${
-              viewMode === 'dashboard' ? 'text-black underline underline-offset-4' : 'text-neutral-500 hover:text-black'
+            className={`transition-colors text-xs font-semibold ${
+              viewMode === 'dashboard' ? 'text-neutral-900 font-bold' : 'text-neutral-500 hover:text-neutral-900'
             }`}
           >
-            Engine
+            Valuation Engine
           </button>
 
           <a
             href="https://github.com/Atharvchaskar008/ATLAS"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden md:flex items-center gap-1 text-xs uppercase tracking-wider text-neutral-500 hover:text-black font-semibold transition-colors"
+            className="hidden md:flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-900 font-semibold transition-colors"
           >
-            <span>Source</span>
+            <span>GitHub</span>
             <ArrowUpRight className="w-3 h-3" />
           </a>
 
@@ -62,14 +64,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           {viewMode === 'landing' ? (
             <button
               onClick={() => onViewChange('dashboard')}
-              className="bg-black text-white hover:bg-neutral-800 text-xs uppercase tracking-wider font-bold px-4 py-2 border border-black transition-all active:translate-y-0.5"
+              className="bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold px-4 py-2 rounded-full transition-all active:scale-95 shadow-sm"
             >
-              Launch Dashboard
+              Get Valuation
             </button>
           ) : (
             <button
               onClick={() => onViewChange('landing')}
-              className="border border-black text-black hover:bg-black hover:text-white text-xs uppercase tracking-wider font-bold px-4 py-2 transition-all active:translate-y-0.5"
+              className="border border-neutral-300 text-neutral-800 hover:bg-neutral-100 text-xs font-semibold px-4 py-2 rounded-full transition-all active:scale-95"
             >
               Back to Overview
             </button>
