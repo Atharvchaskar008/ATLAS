@@ -42,11 +42,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
         
         {/* Left Column: Clear Natural Language + Decrypted Text Effect */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="inline-flex items-center space-x-2 border border-neutral-800 bg-neutral-950 px-3.5 py-1.5 rounded-full text-xs font-mono uppercase tracking-widest text-neutral-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Statewide Valuation Engine</span>
-          </div>
-
           <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.08]">
             <DecryptedText
               text="Know the true market value of any property."
