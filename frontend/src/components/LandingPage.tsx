@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { ScrollStack } from './ScrollStack';
+import { SpotlightCard } from './reactbits/SpotlightCard';
+import { DecryptedText } from './reactbits/DecryptedText';
+import { CountUp } from './reactbits/CountUp';
 
 interface LandingPageProps {
   onLaunchDashboard: () => void;
@@ -45,12 +48,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
     <div className="bg-white text-neutral-900 min-h-screen flex flex-col font-sans">
       
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 pt-16 pb-20 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <section className="max-w-7xl mx-auto px-6 pt-16 pb-16 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         
-        {/* Left Column: Clear Natural Language */}
+        {/* Left Column: Clear Natural Language + Decrypted Text Effect */}
         <div className="lg:col-span-7 space-y-6">
           <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-900 leading-[1.08]">
-            Know the true market value of any property.
+            <DecryptedText
+              text="Know the true market value of any property."
+              speed={35}
+              maxIterations={14}
+              animateOn="view"
+            />
           </h1>
 
           <p className="text-base sm:text-lg text-neutral-600 max-w-xl font-normal leading-relaxed">
@@ -60,10 +68,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
           <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
             <button
               onClick={onLaunchDashboard}
-              className="bg-neutral-900 text-white hover:bg-neutral-800 px-8 py-4 rounded-full text-sm font-semibold flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md hover:shadow-lg"
+              className="bg-neutral-900 text-white hover:bg-neutral-800 px-8 py-4 rounded-full text-sm font-semibold flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md hover:shadow-lg group"
             >
               <span>Estimate Property Value</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             
             <a
@@ -127,8 +135,41 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
         </div>
       </section>
 
-      {/* Two Card Boxes Explaining the Solution */}
-      <section id="solution" className="border-t border-neutral-200 bg-neutral-50/50 py-20">
+      {/* Dynamic Animated Statistics Bar (CountUp Component) */}
+      <section className="border-t border-b border-neutral-200 bg-neutral-50/60 py-8">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div>
+            <div className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-900">
+              <CountUp to={36} duration={1.8} />
+            </div>
+            <div className="text-xs text-neutral-500 font-sans mt-1">Maharashtra Districts</div>
+          </div>
+
+          <div>
+            <div className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-900">
+              <CountUp to={3500} duration={2} suffix="+" />
+            </div>
+            <div className="text-xs text-neutral-500 font-sans mt-1">Registered Transactions</div>
+          </div>
+
+          <div>
+            <div className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-900">
+              <CountUp to={100} duration={1.5} suffix="%" />
+            </div>
+            <div className="text-xs text-neutral-500 font-sans mt-1">Official ASR Circle Rate Anchors</div>
+          </div>
+
+          <div>
+            <div className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-900">
+              0%
+            </div>
+            <div className="text-xs text-neutral-500 font-sans mt-1">Speculative Seller Markup</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Two Card Boxes Explaining the Solution with SpotlightCard */}
+      <section id="solution" className="bg-white py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-10 flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 font-semibold">
@@ -140,8 +181,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Box 1 */}
-            <div className="bg-white rounded-3xl border border-neutral-200 p-8 sm:p-10 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+            {/* Box 1 (SpotlightCard) */}
+            <SpotlightCard className="flex flex-col justify-between">
               <div>
                 <span className="text-xs font-mono text-neutral-400 block mb-4">01 / HONEST PRICING</span>
                 <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 mb-3">
@@ -151,13 +192,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
                   Sellers often inflate public listing prices by 10% to 15% just to leave room for negotiation. ATLAS analyzes actual registered transaction records so you know what buyers actually paid.
                 </p>
               </div>
-              <div className="pt-6 border-t border-neutral-100 mt-8 text-xs font-mono text-neutral-500">
-                Based on actual deeds, not asking prices
+              <div className="pt-6 border-t border-neutral-100 mt-8 text-xs font-mono text-neutral-500 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-neutral-900" />
+                <span>Based on actual deeds, not asking prices</span>
               </div>
-            </div>
+            </SpotlightCard>
 
-            {/* Box 2 */}
-            <div className="bg-white rounded-3xl border border-neutral-200 p-8 sm:p-10 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+            {/* Box 2 (SpotlightCard) */}
+            <SpotlightCard className="flex flex-col justify-between">
               <div>
                 <span className="text-xs font-mono text-neutral-400 block mb-4">02 / LEGAL TRANSPARENCY</span>
                 <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 mb-3">
@@ -167,10 +209,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
                   Instantly verify the legal minimum valuation and exact stamp duty based on the official Maharashtra Ready Reckoner gazette. No surprises at the registration office.
                 </p>
               </div>
-              <div className="pt-6 border-t border-neutral-100 mt-8 text-xs font-mono text-neutral-500">
-                Official Ready Reckoner (ASR 2024–2026) verified
+              <div className="pt-6 border-t border-neutral-100 mt-8 text-xs font-mono text-neutral-500 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-neutral-900" />
+                <span>Official Ready Reckoner (ASR 2024–2026) verified</span>
               </div>
-            </div>
+            </SpotlightCard>
           </div>
         </div>
       </section>
