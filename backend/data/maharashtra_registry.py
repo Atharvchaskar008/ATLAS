@@ -16,6 +16,24 @@ import math
 MAHARASHTRA_LOCALITY_HUBS: List[Dict[str, Any]] = [
     # ==================== MUMBAI METROPOLITAN REGION (MMR) ====================
     {
+        "id": "MMR-MUM-MAZ",
+        "locality": "Mazgaon / Byculla (Hattibaugh)",
+        "district": "Mumbai City",
+        "region": "MMR",
+        "authority": "BMC",
+        "lat": 18.9696,
+        "lng": 72.8427,
+        "pincode": 400010,
+        "stamp_duty_pct": 6.0,
+        "ready_reckoner_carpet_sqft": 26000,
+        "market_rate_carpet_sqft_avg": 31500,
+        "market_rate_min": 26500,
+        "market_rate_max": 39000,
+        "annual_growth_pct": 6.8,
+        "type": "South Mumbai Urban Core",
+        "hubs": ["Eastern Freeway", "Byculla Railway Station", "Dockyard Road", "Mazagon Dock", "Hattibaug Heritage Enclave"]
+    },
+    {
         "id": "MMR-MUM-WOR",
         "locality": "Worli / Lower Parel",
         "district": "Mumbai City",

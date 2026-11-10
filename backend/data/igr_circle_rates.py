@@ -37,6 +37,7 @@ DISTRICT_CIRCLE_RATES: dict[str, dict] = {
             "Malabar Hill / Cuffe Parade": 42_000,
             "Bandra West / Pali Hill": 32_000,
             "Worli / Lower Parel": 28_000,
+            "Mazgaon / Byculla (Hattibaugh)": 26_000,
             "Dadar / Mahim": 22_000,
             "Andheri West": 18_000,
         },
