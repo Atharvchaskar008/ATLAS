@@ -49,11 +49,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
         
         {/* Left Column: Clear Natural Language */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="inline-flex items-center gap-2 bg-neutral-100 border border-neutral-200 px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-700">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Honest Real Estate Valuations</span>
-          </div>
-
           <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-900 leading-[1.08]">
             Know the true market value of any property.
           </h1>
