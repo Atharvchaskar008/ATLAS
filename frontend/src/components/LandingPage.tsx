@@ -4,174 +4,124 @@ import { ScrollStack } from './ScrollStack';
 import { SpotlightCard } from './reactbits/SpotlightCard';
 import { DecryptedText } from './reactbits/DecryptedText';
 import { CountUp } from './reactbits/CountUp';
+import { AsciiArchitecture } from './AsciiArchitecture';
 
 interface LandingPageProps {
   onLaunchDashboard: () => void;
   onSelectPreset?: (presetName: string) => void;
 }
 
-const HERO_IMAGES = [
-  {
-    url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-    title: 'Modern Villa Architecture',
-    caption: 'Verified spatial assessment & land parcel valuation',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
-    title: 'Sunlit Urban Residence',
-    caption: 'Carpet efficiency & registered transaction benchmarking',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
-    title: 'Contemporary Living Space',
-    caption: 'Circle rate statutory compliance across Maharashtra',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
-    title: 'Prime Residential Asset',
-    caption: 'Instant bank-grade appraisal for buyers & lenders',
-  },
-];
-
 export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) => {
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
-  // Auto-cycle hero images smoothly every 3.5 seconds
+  // Large interactive scrollbar progress tracker
   useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 3500);
-    return () => clearInterval(timer);
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const currentProgress = totalScroll > 0 ? (window.scrollY / totalScroll) * 100 : 0;
+      setScrollProgress(currentProgress);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div className="bg-white text-neutral-900 min-h-screen flex flex-col font-sans">
+    <div className="bg-black text-white min-h-screen flex flex-col font-sans selection:bg-white selection:text-black relative">
       
+      {/* Top Large Scroll Progress Bar (Design Showcase) */}
+      <div className="fixed top-16 left-0 right-0 h-1.5 bg-neutral-900 z-40">
+        <div
+          className="h-full bg-gradient-to-r from-neutral-400 via-white to-neutral-200 transition-all duration-150"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
+
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 pt-16 pb-16 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <section className="max-w-7xl mx-auto px-6 pt-16 pb-20 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         
         {/* Left Column: Clear Natural Language + Decrypted Text Effect */}
         <div className="lg:col-span-7 space-y-6">
-          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-900 leading-[1.08]">
+          <div className="inline-flex items-center space-x-2 border border-neutral-800 bg-neutral-950 px-3.5 py-1.5 rounded-full text-xs font-mono uppercase tracking-widest text-neutral-400">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Statewide Valuation Engine</span>
+          </div>
+
+          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.08]">
             <DecryptedText
               text="Know the true market value of any property."
-              speed={35}
-              maxIterations={14}
+              speed={30}
+              maxIterations={12}
               animateOn="view"
             />
           </h1>
 
-          <p className="text-base sm:text-lg text-neutral-600 max-w-xl font-normal leading-relaxed">
-            Online real estate portals often show inflated asking prices. ATLAS helps you discover the genuine, transacted market value and official circle rates before you buy, sell, or take a loan.
+          <p className="text-base sm:text-lg text-neutral-400 max-w-xl font-normal leading-relaxed font-sans">
+            Online real estate portals often show inflated asking prices. ATLAS calculates the honest, transacted market value and official circle rates before you buy, sell, or finance.
           </p>
 
           <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
             <button
               onClick={onLaunchDashboard}
-              className="bg-neutral-900 text-white hover:bg-neutral-800 px-8 py-4 rounded-full text-sm font-semibold flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-md hover:shadow-lg group"
+              className="bg-white text-black hover:bg-neutral-200 px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-xl shadow-white/5 group"
             >
               <span>Estimate Property Value</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-black" />
             </button>
             
             <a
               href="#solution"
-              className="border border-neutral-300 text-neutral-700 hover:bg-neutral-50 px-8 py-4 rounded-full text-sm font-semibold text-center transition-all flex items-center justify-center gap-1.5"
+              className="border border-neutral-800 text-neutral-300 hover:bg-neutral-900 px-8 py-4 rounded-full text-sm font-semibold text-center transition-all flex items-center justify-center gap-1.5"
             >
               <span>See How It Works</span>
-              <ChevronRight className="w-4 h-4 text-neutral-400" />
+              <ChevronRight className="w-4 h-4 text-neutral-500" />
             </a>
           </div>
         </div>
 
-        {/* Right Column: Dynamic Colorful Cross-Fading Architectural Carousel */}
+        {/* Right Column: ASCII Real Estate Architectural Structure Terminal */}
         <div className="lg:col-span-5">
-          <div className="relative rounded-3xl border border-neutral-200/80 p-2.5 bg-neutral-50 shadow-xl overflow-hidden">
-            {/* Image Frame */}
-            <div className="relative overflow-hidden aspect-[4/5] rounded-2xl bg-neutral-200">
-              {HERO_IMAGES.map((img, idx) => (
-                <div
-                  key={img.url}
-                  className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                    idx === activeImageIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'
-                  }`}
-                >
-                  <img
-                    src={img.url}
-                    alt={img.title}
-                    className="w-full h-full object-cover"
-                  />
-                  {/* Subtle Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  
-                  {/* Image Badge at Bottom */}
-                  <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <div className="text-sm font-display font-bold">{img.title}</div>
-                    <div className="text-xs text-white/80 font-sans mt-0.5">{img.caption}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Carousel Dot Indicators */}
-            <div className="mt-3 px-2 flex items-center justify-between">
-              <div className="flex items-center space-x-1.5">
-                {HERO_IMAGES.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImageIndex(idx)}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      idx === activeImageIndex ? 'w-6 bg-neutral-900' : 'w-2 bg-neutral-300 hover:bg-neutral-500'
-                    }`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                ))}
-              </div>
-              <span className="text-[11px] font-mono text-neutral-500">
-                0{activeImageIndex + 1} / 0{HERO_IMAGES.length}
-              </span>
-            </div>
-          </div>
+          <AsciiArchitecture />
         </div>
       </section>
 
       {/* Dynamic Animated Statistics Bar (CountUp Component) */}
-      <section className="border-t border-b border-neutral-200 bg-neutral-50/60 py-8">
+      <section className="border-t border-b border-neutral-800/80 bg-neutral-950 py-10">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
-            <div className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-900">
+            <div className="font-display text-4xl sm:text-5xl font-black text-white">
               <CountUp to={36} duration={1.8} />
             </div>
-            <div className="text-xs text-neutral-500 font-sans mt-1">Maharashtra Districts</div>
+            <div className="text-xs text-neutral-400 font-sans mt-1">Maharashtra Districts</div>
           </div>
 
           <div>
-            <div className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-900">
+            <div className="font-display text-4xl sm:text-5xl font-black text-white">
               <CountUp to={3500} duration={2} suffix="+" />
             </div>
-            <div className="text-xs text-neutral-500 font-sans mt-1">Registered Transactions</div>
+            <div className="text-xs text-neutral-400 font-sans mt-1">Registered Transactions</div>
           </div>
 
           <div>
-            <div className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-900">
+            <div className="font-display text-4xl sm:text-5xl font-black text-white">
               <CountUp to={100} duration={1.5} suffix="%" />
             </div>
-            <div className="text-xs text-neutral-500 font-sans mt-1">Official ASR Circle Rate Anchors</div>
+            <div className="text-xs text-neutral-400 font-sans mt-1">Official ASR Circle Rate Anchors</div>
           </div>
 
           <div>
-            <div className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-900">
+            <div className="font-display text-4xl sm:text-5xl font-black text-white">
               0%
             </div>
-            <div className="text-xs text-neutral-500 font-sans mt-1">Speculative Seller Markup</div>
+            <div className="text-xs text-neutral-400 font-sans mt-1">Speculative Seller Markup</div>
           </div>
         </div>
       </section>
 
-      {/* Two Card Boxes Explaining the Solution with SpotlightCard */}
-      <section id="solution" className="bg-white py-20">
+      {/* Two Solution Cards with SpotlightCard */}
+      <section id="solution" className="py-24 bg-black">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="mb-10 flex items-center justify-between">
+          <div className="mb-12 flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 font-semibold">
               The Reality
             </span>
@@ -184,16 +134,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
             {/* Box 1 (SpotlightCard) */}
             <SpotlightCard className="flex flex-col justify-between">
               <div>
-                <span className="text-xs font-mono text-neutral-400 block mb-4">01 / HONEST PRICING</span>
-                <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 mb-3">
+                <span className="text-xs font-mono text-neutral-500 block mb-4">01 / HONEST PRICING</span>
+                <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3">
                   No listing portal markups.
                 </h3>
-                <p className="text-sm sm:text-base text-neutral-600 leading-relaxed font-sans">
+                <p className="text-sm sm:text-base text-neutral-400 leading-relaxed font-sans">
                   Sellers often inflate public listing prices by 10% to 15% just to leave room for negotiation. ATLAS analyzes actual registered transaction records so you know what buyers actually paid.
                 </p>
               </div>
-              <div className="pt-6 border-t border-neutral-100 mt-8 text-xs font-mono text-neutral-500 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-neutral-900" />
+              <div className="pt-6 border-t border-neutral-800 mt-8 text-xs font-mono text-neutral-400 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                 <span>Based on actual deeds, not asking prices</span>
               </div>
             </SpotlightCard>
@@ -201,16 +151,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
             {/* Box 2 (SpotlightCard) */}
             <SpotlightCard className="flex flex-col justify-between">
               <div>
-                <span className="text-xs font-mono text-neutral-400 block mb-4">02 / LEGAL TRANSPARENCY</span>
-                <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 mb-3">
+                <span className="text-xs font-mono text-neutral-500 block mb-4">02 / LEGAL TRANSPARENCY</span>
+                <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3">
                   Official government circle rates.
                 </h3>
-                <p className="text-sm sm:text-base text-neutral-600 leading-relaxed font-sans">
+                <p className="text-sm sm:text-base text-neutral-400 leading-relaxed font-sans">
                   Instantly verify the legal minimum valuation and exact stamp duty based on the official Maharashtra Ready Reckoner gazette. No surprises at the registration office.
                 </p>
               </div>
-              <div className="pt-6 border-t border-neutral-100 mt-8 text-xs font-mono text-neutral-500 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-neutral-900" />
+              <div className="pt-6 border-t border-neutral-800 mt-8 text-xs font-mono text-neutral-400 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                 <span>Official Ready Reckoner (ASR 2024–2026) verified</span>
               </div>
             </SpotlightCard>
@@ -218,26 +168,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
         </div>
       </section>
 
-      {/* React Bits Pro Scroll Stack Component */}
+      {/* React Bits Pro Scroll Stack Component (Inverted Crisp White Cards on Black Canvas) */}
       <ScrollStack />
 
       {/* Giant Statement: ATLAS */}
-      <section className="border-t border-b border-neutral-200 py-16 sm:py-24 bg-white overflow-hidden select-none">
+      <section className="border-t border-b border-neutral-900 py-20 sm:py-28 bg-black overflow-hidden select-none">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="font-display text-[15vw] sm:text-[18vw] font-black tracking-tighter leading-none text-neutral-900 uppercase">
+          <h2 className="font-display text-[15vw] sm:text-[18vw] font-black tracking-tighter leading-none text-white uppercase">
             ATLAS
           </h2>
-          <p className="mt-4 text-xs sm:text-sm font-mono text-neutral-400 uppercase tracking-widest">
+          <p className="mt-4 text-xs sm:text-sm font-mono text-neutral-500 uppercase tracking-widest">
             Automated Terrain & Asset Location Assessment System
           </p>
         </div>
       </section>
 
-      {/* Minimal Footer */}
-      <footer className="bg-white py-12 mt-auto">
+      {/* Minimal Dark Footer */}
+      <footer className="bg-black border-t border-neutral-900 py-12 mt-auto">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 text-xs text-neutral-500 font-mono">
           <div className="flex items-center space-x-2">
-            <span className="font-bold text-neutral-900 font-display">ATLAS</span>
+            <span className="font-bold text-white font-display">ATLAS</span>
             <span>— Property Valuation & Assessment</span>
           </div>
           <div className="flex items-center space-x-6">
