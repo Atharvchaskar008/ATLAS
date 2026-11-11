@@ -507,8 +507,9 @@ app.include_router(router, prefix="")
 
 
 # --- Production Static Files & SPA Routing ---
+# --- Production Static Files & SPA Routing ---
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 
 frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
 if os.path.exists(frontend_dist):
@@ -516,24 +517,32 @@ if os.path.exists(frontend_dist):
     if os.path.exists(assets_dir):
         app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
-    @app.get("/")
-    def serve_root():
-        index_file = os.path.join(frontend_dist, "index.html")
-        if os.path.exists(index_file):
-            return FileResponse(index_file)
-        return {"service": "A.T.L.A.S. Engine", "status": "online"}
+@app.get("/", response_class=HTMLResponse)
+def serve_root():
+    for candidate in [
+        os.path.join(frontend_dist, "index.html"),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "api", "index.html")),
+    ]:
+        if os.path.exists(candidate):
+            with open(candidate, "r", encoding="utf-8") as f:
+                return HTMLResponse(content=f.read(), status_code=200)
+    return HTMLResponse(content="<!doctype html><html><body><h1>ATLAS Engine Online</h1><p>Please reload to access dashboard.</p></body></html>", status_code=200)
 
-    @app.get("/{full_path:path}")
-    def serve_frontend_spa(full_path: str):
-        if full_path.startswith("api/") or full_path.startswith("valuation/") or full_path in ("api", "valuation", "health"):
-            raise HTTPException(status_code=404, detail="Not Found")
-        file_path = os.path.join(frontend_dist, full_path)
-        if os.path.exists(file_path) and os.path.isfile(file_path):
-            return FileResponse(file_path)
-        index_file = os.path.join(frontend_dist, "index.html")
-        if os.path.exists(index_file):
-            return FileResponse(index_file)
+@app.get("/{full_path:path}")
+def serve_frontend_spa(full_path: str):
+    if full_path.startswith("api/") or full_path.startswith("valuation/") or full_path in ("api", "valuation", "health"):
         raise HTTPException(status_code=404, detail="Not Found")
+    file_path = os.path.join(frontend_dist, full_path)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        return FileResponse(file_path)
+    for candidate in [
+        os.path.join(frontend_dist, "index.html"),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "api", "index.html")),
+    ]:
+        if os.path.exists(candidate):
+            with open(candidate, "r", encoding="utf-8") as f:
+                return HTMLResponse(content=f.read(), status_code=200)
+    raise HTTPException(status_code=404, detail="Not Found")
 
 
 if __name__ == "__main__":

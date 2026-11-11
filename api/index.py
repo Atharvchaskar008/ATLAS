@@ -36,12 +36,36 @@ async def app(scope, receive, send):
             target = f"/api/{clean_sub}"
         else:
             raw = scope.get("path", "")
-            if raw in ("/api/index.py", "/index.py", "/api/index"):
+            if raw in ("/api/index.py", "/index.py", "/api/index", "", "/"):
                 target = "/"
             else:
                 target = raw or "/"
 
         scope["path"] = target
         scope["raw_path"] = target.encode("utf-8")
+
+        # If a non-API root request reaches this serverless function, serve index.html directly
+        if target == "/" or not target.startswith("/api"):
+            for candidate in [
+                os.path.join(os.path.dirname(__file__), "index.html"),
+                os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist", "index.html")),
+            ]:
+                if os.path.exists(candidate):
+                    with open(candidate, "r", encoding="utf-8") as f:
+                        content = f.read().encode("utf-8")
+                    await send({
+                        "type": "http.response.start",
+                        "status": 200,
+                        "headers": [
+                            [b"content-type", b"text/html; charset=utf-8"],
+                            [b"cache-control", b"no-cache, no-store, must-revalidate"],
+                            [b"content-length", str(len(content)).encode("ascii")],
+                        ],
+                    })
+                    await send({
+                        "type": "http.response.body",
+                        "body": content,
+                    })
+                    return
 
     await fastapi_app(scope, receive, send)
