@@ -32,13 +32,11 @@ async def app(scope, receive, send):
 
         current_path = scope.get("path", "")
         
-        # If Vercel rewrote path to the function file itself (/api/index.py or /api or /index.py)
-        if matched and current_path in ("/api/index.py", "/api", "/index.py", "/", ""):
+        # If Vercel provided the matched user path, ALWAYS prioritize it over internal function path
+        if matched:
             target = matched
-        elif current_path:
-            target = current_path
         else:
-            target = matched or "/"
+            target = current_path or "/"
             
         if "?" in target:
             target, qs = target.split("?", 1)

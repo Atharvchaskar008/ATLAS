@@ -70,6 +70,16 @@ class SensitivityInput(BaseModel):
 
 
 # --- API Routes ---
+@router.api_route("/debug", methods=["GET", "POST"])
+def server_debug_info():
+    return {
+        "status": "online",
+        "vercel_env": os.environ.get("VERCEL", "0"),
+        "total_comps": len(engine.all_comps),
+        "supported_hubs": len(MAHARASHTRA_LOCALITY_HUBS),
+    }
+
+
 @router.get("/health")
 def health_check():
     return {
