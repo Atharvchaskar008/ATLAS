@@ -39,6 +39,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from fastapi import Request
+
+@app.middleware("http")
+async def fix_vercel_path(request: Request, call_next):
+    matched = request.headers.get("x-matched-path") or request.headers.get("x-forwarded-uri")
+    if matched:
+        if "?" in matched:
+            matched, qs = matched.split("?", 1)
+        if not matched.startswith("/api"):
+            matched = "/api" + (matched if matched.startswith("/") else "/" + matched)
+        request.scope["path"] = matched
+    return await call_next(request)
+
 # Initialize Valuation Engine singleton
 engine = ValuationEngine()
 
