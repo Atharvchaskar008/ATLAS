@@ -60,6 +60,20 @@ body {
   background: #111111 !important;
 }
 
+/* Shimmer Animation for React Bits ShinyText */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 4s linear infinite;
+}
+
 /* Print Styles */
 @media print {
   header, nav, button, .no-print {

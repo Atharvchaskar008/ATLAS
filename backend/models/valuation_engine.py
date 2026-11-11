@@ -294,10 +294,26 @@ class ValuationEngine:
                 lat = self.pune_localities[locality_name]["lat"]
                 lng = self.pune_localities[locality_name]["lng"]
             else:
-                # Check Maharashtra hubs
-                matched = next((h for h in self.maharashtra_hubs if locality_name.lower() in h["locality"].lower()), self.maharashtra_hubs[0])
-                lat = matched["lat"]
-                lng = matched["lng"]
+                # Check Maharashtra hubs with flexible matching
+                matched = None
+                loc_lower = locality_name.lower()
+                for h in self.maharashtra_hubs:
+                    h_loc = h["locality"].lower()
+                    if loc_lower in h_loc or any(part.strip() in h_loc for part in loc_lower.split('/') if len(part.strip()) > 3):
+                        matched = h
+                        break
+                if not matched:
+                    try:
+                        geo = PlacesService.geocode_address(locality_name)
+                        if geo and 15.6 <= geo[0]["lat"] <= 22.2 and 72.5 <= geo[0]["lng"] <= 81.0:
+                            lat = geo[0]["lat"]
+                            lng = geo[0]["lng"]
+                    except Exception:
+                        pass
+                if lat is None or lng is None:
+                    matched = matched or self.maharashtra_hubs[0]
+                    lat = matched["lat"]
+                    lng = matched["lng"]
 
         prop["lat"] = lat
         prop["lng"] = lng

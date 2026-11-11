@@ -198,6 +198,8 @@ def simulate_sensitivity(sim: SensitivityInput):
     }
 
 
+GEMINI_QUOTA_EXHAUSTED = False
+
 @app.post("/api/valuation/chat-parse")
 def chat_parse_and_evaluate(query: ChatQuery):
     """
@@ -223,7 +225,7 @@ def chat_parse_and_evaluate(query: ChatQuery):
         detected_bhk = int(bhk_m.group(1))
 
     # Carpet Area extraction (if 1RK and omitted, estimate realistic 275 sq.ft carpet)
-    detected_sqft = 275.0 if is_rk else (450.0 if detected_bhk == 1 else 650.0)
+    detected_sqft = 275.0 if is_rk else (450.0 if detected_bhk == 1 else (650.0 if detected_bhk == 2 else 1050.0))
     sqft_m = re.search(r'(\d{2,4})\s*(?:sqft|sq\.ft|square\s*feet|carpet|sq\s*ft)', msg_lower)
     if sqft_m:
         detected_sqft = float(sqft_m.group(1))
@@ -238,40 +240,150 @@ def chat_parse_and_evaluate(query: ChatQuery):
         detected_furnishing = "Semi-Furnished"
 
     # Parking
-    detected_parking = "Covered" if ("parking" in msg_lower and "no parking" not in msg_lower) else "None"
+    detected_parking = "Covered" if ("parking" in msg_lower and "no parking" not in msg_lower and "without parking" not in msg_lower) else "None"
     if "open parking" in msg_lower:
         detected_parking = "Open"
-    elif "2 covered" in msg_lower:
+    elif "2 covered" in msg_lower or "two covered" in msg_lower:
         detected_parking = "2 Covered"
 
-    # Locality & Region Resolution
-    detected_locality = "Moshi / Sector 6 (Jal Vayu Vihar)"
-    detected_lat = 18.6742
-    detected_lng = 73.8445
+    # Floor & Total Floors
+    detected_floor = 2
+    detected_total_floors = 4 if is_rk else 10
+    floor_m = re.search(r'(?:on\s+)?(\d+)(?:st|nd|rd|th)?\s*floor', msg_lower)
+    if floor_m:
+        detected_floor = int(floor_m.group(1))
+    total_floor_m = re.search(r'(?:total\s+)?(\d+)\s*(?:floors|storey|story)', msg_lower)
+    if total_floor_m:
+        detected_total_floors = max(detected_floor, int(total_floor_m.group(1)))
 
-    # Check Mazgaon / Hattibaugh / South Mumbai specifically
-    if "mazgaon" in msg_lower or "hattibaugh" in msg_lower or "hattibaug" in msg_lower or "byculla" in msg_lower:
-        detected_locality = "Mazgaon / Byculla (Hattibaugh)"
-        detected_lat = 18.9696
-        detected_lng = 72.8427
-    else:
-        # Match against all known Maharashtra hubs
-        for hub in MAHARASHTRA_LOCALITY_HUBS:
-            clean_hub_name = hub["locality"].split("/")[0].strip().lower()
-            tokens = [t.strip() for t in clean_hub_name.split() if len(t.strip()) > 3]
-            if clean_hub_name in msg_lower or any(t in msg_lower for t in tokens):
-                detected_locality = hub["locality"]
-                detected_lat = hub["lat"]
-                detected_lng = hub["lng"]
-                break
+    # Age extraction
+    detected_age = 18 if ("mazgaon" in msg_lower or "byculla" in msg_lower) else 5
+    age_m = re.search(r'(\d+)\s*(?:years?|yrs?)\s*old', msg_lower)
+    if age_m:
+        detected_age = int(age_m.group(1))
+    elif "brand new" in msg_lower or "under construction" in msg_lower or "new construction" in msg_lower:
+        detected_age = 0
+
+    # Exhaustive Maharashtra Locality Priority Resolution
+    LOCALITY_KEYWORD_MAP = [
+        # South Mumbai & Island City
+        (["mazgaon", "hattibaugh", "hattibaug", "byculla", "dockyard", "priyakuter"], "Mazgaon / Byculla (Hattibaugh)", 18.9696, 72.8427),
+        (["malabar hill", "cuffe parade", "walkeshwar", "nepean sea", "colaba", "marine drive", "nariman point", "churchgate"], "Malabar Hill / Cuffe Parade", 18.9550, 72.7980),
+        (["worli", "lower parel", "prabhadevi", "mahalaxmi", "currey road"], "Worli / Lower Parel", 19.0020, 72.8280),
+        (["dadar", "mahim", "matunga", "shivaji park"], "Dadar / Mahim", 19.0178, 72.8478),
+        
+        # Western Suburbs (MMR)
+        (["bandra west", "bandra east", "bandstand", "pali hill", "carter road", "khar west", "khar", "bandra"], "Bandra West / Khar", 19.0596, 72.8295),
+        (["bkc", "bandra kurla complex", "kalanagar"], "Bandra-Kurla Complex (BKC) / Kalanagar", 19.0657, 72.8683),
+        (["andheri west", "andheri east", "lokhandwala", "versova", "oshiwara", "andheri", "juhu", "jvpd", "seven bungalows"], "Andheri West / Lokhandwala", 19.1363, 72.8277),
+        (["powai", "hiranandani", "chandivali"], "Powai / Hiranandani", 19.1176, 72.9060),
+        (["goregaon west", "goregaon east", "malad west", "malad east", "goregaon", "malad"], "Goregaon West / Malad", 19.1663, 72.8526),
+        (["borivali west", "borivali east", "kandivali west", "kandivali east", "borivali", "kandivali", "dahisar"], "Borivali / Kandivali", 19.2307, 72.8567),
+        
+        # Eastern Suburbs (MMR)
+        (["mulund", "vikhroli", "chembur", "ghatkopar", "bhandup", "kanjurmarg", "tilak nagar", "kurla", "sion", "wadala"], "Mulund / Vikhroli / Chembur", 19.1726, 72.9425),
+        
+        # Thane & Beyond
+        (["thane west", "ghodbunder", "majiwada", "kolshet", "naupada", "vartak nagar", "balkum", "panchpakhadi", "kalwa", "thane"], "Thane West (Ghodbunder Road / Majiwada)", 19.2183, 72.9781),
+        (["dombivli", "kalyan", "palava", "shilphata", "ulhasnagar", "bhiwandi", "ambernath", "badlapur"], "Dombivli / Kalyan (Kalyan-Shil Corridor)", 19.2184, 73.0867),
+        (["mira road", "bhayandar", "vasai", "virar", "nalasopara"], "Mira Road / Vasai Corridor", 19.2812, 72.8561),
+        
+        # Navi Mumbai
+        (["vashi", "palm beach", "sanpada", "nerul", "seawoods", "belapur", "ghansoli", "airoli", "koparkhairane", "mahapi"], "Vashi / Palm Beach Road", 19.0771, 72.9986),
+        (["kharghar", "panvel", "ulwe", "dronagiri", "taloja", "kamothe", "khandeshwar", "karanjade", "navi mumbai"], "Kharghar / Panvel (Airport Corridor)", 19.0269, 73.0645),
+        
+        # Pune & PCMC
+        (["kothrud", "karve road", "karve nagar", "erandwane", "deccan", "shivajinagar", "model colony", "fc road", "jm road"], "Kothrud / Karve Road", 18.5074, 73.8077),
+        (["viman nagar", "kalyani nagar", "koregaon park", "wadgaon sheri"], "Viman Nagar / Kalyani Nagar", 18.5679, 73.9143),
+        (["baner", "balewadi", "mahalunge", "sus road"], "Baner / Balewadi High Street", 18.5590, 73.7868),
+        (["wakad", "bhumkar", "thergaon", "pimple saudagar", "pimple nilakh", "pimple gurav", "rahatani", "sangvi"], "Wakad / Bhumkar Chowk", 18.5987, 73.7631),
+        (["hinjawadi", "hinjewadi", "maan", "marunji"], "Hinjawadi (Phase 1, 2 & 3)", 18.5913, 73.7389),
+        (["kharadi", "eon free zone", "eon it park"], "Kharadi / EON Free Zone", 18.5516, 73.9535),
+        (["hadapsar", "magarpatta", "amanora", "mundhwa", "keshav nagar"], "Hadapsar / Magarpatta City", 18.5146, 73.9260),
+        (["aundh", "pashan", "bavdhan"], "Aundh / Pashan / Bavdhan", 18.5580, 73.8070),
+        (["moshi", "jal vayu vihar", "alandi", "chakan", "spine road"], "Moshi / Sector 6 (Jal Vayu Vihar)", 18.6742, 73.8445),
+        (["bhosari", "chinchwad", "pimpri", "nigdi", "akurdi", "pradhikaran", "ravet", "talegaon", "pcmc"], "Pimpri-Chinchwad (Nigdi / Akurdi / Chinchwad)", 18.6448, 73.7997),
+        (["wagholi", "dhanori", "lohegaon"], "Wagholi / Dhanori Corridor", 18.5800, 73.9800),
+        (["nibm", "undri", "katraj", "kondhwa", "wanowrie", "dhayari", "bibwewadi", "narhe", "warje", "sahakar nagar", "ambegaon"], "South Pune (NIBM / Undri / Katraj)", 18.4600, 73.8900),
+        
+        # North Maharashtra
+        (["gangapur road", "college road", "canada corner", "mahatma nagar", "anandwalli"], "Nashik (Gangapur Road / College Road)", 20.0063, 73.7639),
+        (["indira nagar", "pathardi", "satpur", "ambad"], "Nashik (Indira Nagar / Pathardi Phata)", 19.9650, 73.7780),
+        (["panchavati", "nashik road", "kalaram"], "Nashik (Panchavati / Nashik Road)", 19.9920, 73.8120),
+        (["jalgaon"], "Jalgaon City (Court Road / MIDC)", 21.0077, 75.5626),
+        (["dhule"], "Dhule City Corridor", 20.9042, 74.7749),
+        
+        # Vidarbha
+        (["dharampeth", "civil lines", "ramdaspeth", "sadar", "shankar nagar", "laxmi nagar"], "Nagpur (Dharampeth / Civil Lines)", 21.1458, 79.0640),
+        (["wardha road", "mihan", "manish nagar", "besa", "somalwada", "butibori"], "Nagpur (Wardha Road / MIHAN SEZ)", 21.0720, 79.0550),
+        (["amravati"], "Amravati (Ravi Nagar / Camp)", 20.9320, 77.7523),
+        (["akola"], "Akola City Corridor", 20.7002, 77.0082),
+        (["chandrapur"], "Chandrapur City Corridor", 19.9615, 79.2961),
+        
+        # Marathwada
+        (["cidco", "jalna road", "garkheda", "beed bypass", "waluj", "shendra", "aurangabad", "sambhajinagar", "chhatrapati sambhajinagar"], "Chhatrapati Sambhajinagar (CIDCO / Jalna Road)", 19.8762, 75.3433),
+        (["nanded"], "Nanded (Vip Road / MIDC)", 19.1383, 77.3210),
+        (["latur"], "Latur City Corridor", 18.4088, 76.5604),
+        
+        # Western Maharashtra
+        (["rajarampuri", "tarabai park", "shahupuri", "kolhapur", "rankala"], "Kolhapur (Rajarampuri / Tarabai Park)", 16.7050, 74.2433),
+        (["jule solapur", "hotgi", "solapur"], "Solapur (Hotgi Road / Jule Solapur)", 17.6599, 75.9064),
+        (["satara", "karad"], "Satara (MIDC / Sadar Bazar)", 17.6805, 73.9930),
+        (["sangli", "miraj"], "Sangli / Miraj Corridor", 16.8524, 74.5815),
+        
+        # Hill & Coastal
+        (["lonavala", "khandala"], "Lonavala / Khandala Hill Corridor", 18.7557, 73.4091),
+        (["alibaug", "mandwa", "kihim"], "Alibaug / Mandwa Coastal Enclave", 18.6414, 72.8722),
+        (["ratnagiri"], "Ratnagiri (Mirya Road / Kuwarbav)", 16.9902, 73.3120),
+        
+        # Broad Metro Fallbacks (City Names)
+        (["pune"], "Baner / Balewadi High Street", 18.5590, 73.7868),
+        (["mumbai"], "Dadar / Mahim", 19.0178, 72.8478),
+        (["nashik"], "Nashik (Gangapur Road / College Road)", 20.0063, 73.7639),
+        (["nagpur"], "Nagpur (Dharampeth / Civil Lines)", 21.1458, 79.0640)
+    ]
+
+    detected_locality = None
+    detected_lat = None
+    detected_lng = None
+
+    for keywords, loc_name, lat, lng in LOCALITY_KEYWORD_MAP:
+        if any(re.search(r'\b' + re.escape(kw) + r'\b', msg_lower) for kw in keywords):
+            detected_locality = loc_name
+            detected_lat = lat
+            detected_lng = lng
+            break
+
+    # If still not matched, check if PlacesService can geocode any location phrase from query
+    if not detected_locality:
+        try:
+            # Extract possible location words
+            cleaned_phrase = re.sub(r'\b\d+\s*(?:bhk|rk|sqft|sq\.ft|feet|floor|years?|yrs?|old)\b', '', msg_lower)
+            geo_results = PlacesService.geocode_address(cleaned_phrase)
+            if geo_results:
+                top_geo = geo_results[0]
+                # Verify coordinate is in Maharashtra bounds (approx lat 15.6 to 22.2, lng 72.5 to 81.0)
+                if 15.6 <= top_geo["lat"] <= 22.2 and 72.5 <= top_geo["lng"] <= 81.0:
+                    detected_lat = top_geo["lat"]
+                    detected_lng = top_geo["lng"]
+                    loc_meta = resolve_maharashtra_location(detected_lat, detected_lng)
+                    detected_locality = loc_meta["locality_name"]
+        except Exception:
+            pass
+
+    # Clean default if user provided zero geographic keywords
+    if not detected_locality:
+        detected_locality = "Maharashtra Urban Benchmark Corridor (Mumbai / Pune Core)"
+        detected_lat = 19.0760
+        detected_lng = 72.8777
 
     extracted_prop = {
         "locality": detected_locality,
         "bhk": detected_bhk,
         "carpet_sqft": detected_sqft,
-        "floor": 2,
-        "total_floors": 4 if is_rk else 10,
-        "age_years": 18 if "mazgaon" in msg_lower else 5,
+        "floor": detected_floor,
+        "total_floors": detected_total_floors,
+        "age_years": detected_age,
         "parking": detected_parking,
         "facing": "East",
         "furnishing": detected_furnishing,
@@ -281,7 +393,8 @@ def chat_parse_and_evaluate(query: ChatQuery):
     }
 
     # 2. Try Gemini to enrich if available and within quota
-    if gemini_key:
+    global GEMINI_QUOTA_EXHAUSTED
+    if gemini_key and not GEMINI_QUOTA_EXHAUSTED:
         try:
             from google import genai
             from google.genai import types
@@ -312,19 +425,28 @@ Return ONLY JSON.
                     if k in extracted_prop and v is not None and v != "":
                         extracted_prop[k] = v
         except Exception as e:
-            # Safely fall back to our extracted_prop (e.g. when 429 quota is reached)
+            err_str = str(e).lower()
+            if "429" in err_str or "resource_exhausted" in err_str or "quota" in err_str:
+                GEMINI_QUOTA_EXHAUSTED = True
             pass
 
     # 3. Run deterministic valuation
     val_data = engine.estimate_valuation(extracted_prop)
 
-    # 3. Formulate concise, institutional appraisal summary
+    # 4. Formulate concise, natural language valuation summary (dual currency Lakhs + Crores)
+    lakhs_val = val_data['estimated_value_lakhs']
+    crores_val = lakhs_val / 100.0
+    dual_price = f"₹{crores_val:.2f} Crores (₹{lakhs_val:.2f} Lakhs)" if crores_val >= 1.0 else f"₹{lakhs_val:.2f} Lakhs (₹{crores_val:.2f} Crores)"
+
+    min_l = val_data['value_range_lakhs']['min']
+    max_l = val_data['value_range_lakhs']['max']
+    corridor = f"₹{min_l / 100:.2f}Cr – ₹{max_l / 100:.2f}Cr" if max_l >= 100 else f"₹{min_l:.2f}L – ₹{max_l:.2f}L"
+
     ai_reply = (
         f"For your {extracted_prop['bhk']} BHK ({extracted_prop['carpet_sqft']:.0f} sq.ft) in "
-        f"{val_data['property_summary']['locality']}, the engine assesses a Fair Market Value of "
-        f"₹{val_data['estimated_value_lakhs']:.2f} Lakhs (Corridor: ₹{val_data['value_range_lakhs']['min']:.2f}L – ₹{val_data['value_range_lakhs']['max']:.2f}L), "
-        f"reflecting ₹{val_data['rate_per_sqft_carpet']:,}/sq.ft. "
-        f"Official Maharashtra Ready Reckoner circle floor is ₹{val_data['government_benchmark']['government_floor_value_lakhs']:.2f} Lakhs."
+        f"{val_data['property_summary']['locality']}, the engine calculates a Fair Market Value of "
+        f"{dual_price} (Corridor: {corridor}), reflecting ₹{val_data['rate_per_sqft_carpet']:,}/sq.ft. "
+        f"Official Maharashtra Ready Reckoner circle rate floor is ₹{val_data['government_benchmark']['government_floor_value_lakhs']:.2f} Lakhs."
     )
 
     return {

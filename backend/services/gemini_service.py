@@ -20,6 +20,8 @@ except ImportError:
 
 
 class GeminiLocalityService:
+    _quota_exhausted = False
+
     @staticmethod
     def get_api_key() -> Optional[str]:
         return os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
@@ -55,8 +57,8 @@ class GeminiLocalityService:
         walk_score = indices.get("walkability_score", 75)
         transit_score = indices.get("transit_accessibility", 75)
 
-        # If Gemini API key is available, generate live synthesis with Gemini
-        if api_key:
+        # If Gemini API key is available and quota is not exhausted, generate live synthesis
+        if api_key and not cls._quota_exhausted:
             try:
                 import google.generativeai as genai_legacy
                 genai_legacy.configure(api_key=api_key)
@@ -99,7 +101,10 @@ Return a clean JSON object with these keys:
                     "rental_yield_outlook": parsed.get("rental_yield_outlook", ""),
                     "appraisal_verdict": parsed.get("appraisal_verdict", "")
                 }
-            except Exception:
+            except Exception as err:
+                err_str = str(err).lower()
+                if "429" in err_str or "resource_exhausted" in err_str or "quota" in err_str:
+                    cls._quota_exhausted = True
                 pass
 
         # High-Fidelity Grounded Expert AI Layer (Fallback when no API key configured)

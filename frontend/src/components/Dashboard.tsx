@@ -2,6 +2,9 @@ import React, { useState, useRef } from 'react';
 import { ValuationResult } from '../types';
 import { parsePropertyChat, estimateValuation } from '../api';
 import { Paperclip, X, ArrowRight, Printer, Check, FileText, CheckCircle2 } from 'lucide-react';
+import { TiltedCard } from './reactbits/TiltedCard';
+import { ShinyText } from './reactbits/ShinyText';
+import { ParticlesBackground } from './reactbits/ParticlesBackground';
 
 interface DashboardProps {
   onBackToLanding: () => void;
@@ -45,46 +48,13 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       if (parsedData && parsedData.valuation) {
         setValuation(parsedData.valuation);
       } else {
-        // Fallback default evaluation
-        const fallbackProp = {
-          locality: 'Moshi / Sector 6 (Jal Vayu Vihar)',
-          bhk: 2,
-          carpet_sqft: 600,
-          floor: 2,
-          total_floors: 4,
-          age_years: 16,
-          parking: 'Covered',
-          facing: 'East',
-          furnishing: 'Semi-Furnished',
-          society_amenities: 'Basic Society',
-          lat: 18.6742,
-          lng: 73.8445,
-        };
-        const res = await estimateValuation(fallbackProp);
-        setValuation(res);
+        throw new Error('Unable to extract valuation for this property description.');
       }
     } catch (err: any) {
-      console.warn('Evaluation fallback triggered', err);
-      try {
-        const fallbackProp = {
-          locality: 'Moshi / Sector 6 (Jal Vayu Vihar)',
-          bhk: 2,
-          carpet_sqft: 600,
-          floor: 2,
-          total_floors: 4,
-          age_years: 16,
-          parking: 'Covered',
-          facing: 'East',
-          furnishing: 'Semi-Furnished',
-          society_amenities: 'Basic Society',
-          lat: 18.6742,
-          lng: 73.8445,
-        };
-        const res = await estimateValuation(fallbackProp);
-        setValuation(res);
-      } catch (inner: any) {
-        setError(inner.message || 'Unable to calculate valuation');
-      }
+      console.error('Assessment error:', err);
+      setError(
+        err.message || 'Unable to parse property details. Please try specifying the locality, BHK, and carpet area in simple words.'
+      );
     } finally {
       setLoading(false);
     }
@@ -113,10 +83,12 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   return (
-    <div className="bg-black text-white min-h-screen flex flex-col font-sans selection:bg-white selection:text-black">
+    <div className="bg-black text-white min-h-screen flex flex-col font-sans selection:bg-white selection:text-black relative overflow-hidden">
+      {/* Dynamic 3D Geometric Particles Canvas */}
+      <ParticlesBackground particleCount={35} particleColor="rgba(255, 255, 255, 0.35)" lineColor="rgba(255, 255, 255, 0.05)" />
       
       {/* Main Two-Box Workspace */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* BOX 1: INPUT BOX (Left Column: 5 Cols) */}
         <section className="lg:col-span-5 bg-[#0C0C0C] rounded-3xl border border-neutral-800 shadow-2xl p-6 sm:p-8 flex flex-col justify-between">
@@ -260,24 +232,26 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   const rangeMax = formatDualCurrency(valuation.value_range_lakhs.max);
 
                   return (
-                    <div className="bg-neutral-950 rounded-2xl p-6 border border-neutral-800">
-                      <span className="text-xs font-mono uppercase tracking-widest text-neutral-400 block mb-1">
-                        Estimated Fair Market Value
-                      </span>
-                      
-                      <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4">
-                        <span className="font-display text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
-                          {dual.full}
+                    <TiltedCard maxTilt={6} scale={1.01} className="w-full">
+                      <div className="bg-neutral-950 rounded-2xl p-6 border border-neutral-800 shadow-xl shadow-black/60">
+                        <span className="text-xs font-mono uppercase tracking-widest text-neutral-400 block mb-1">
+                          Estimated Fair Market Value
                         </span>
-                        <span className="text-sm font-mono text-neutral-400 font-medium">
-                          {dual.alt} • ₹{valuation.rate_per_sqft_carpet.toLocaleString()} / sq.ft
-                        </span>
-                      </div>
+                        
+                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4">
+                          <span className="font-display text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
+                            <ShinyText text={dual.full} speed={3.5} />
+                          </span>
+                          <span className="text-sm font-mono text-neutral-400 font-medium">
+                            {dual.alt} • ₹{valuation.rate_per_sqft_carpet.toLocaleString()} / sq.ft
+                          </span>
+                        </div>
 
-                      <div className="mt-2 text-xs text-neutral-500 font-sans">
-                        Estimated fair range: {rangeMin.main} – {rangeMax.main} (85% registered comps parity)
+                        <div className="mt-2 text-xs text-neutral-500 font-sans">
+                          Estimated fair range: {rangeMin.main} – {rangeMax.main} (85% registered comps parity)
+                        </div>
                       </div>
-                    </div>
+                    </TiltedCard>
                   );
                 })()}
 

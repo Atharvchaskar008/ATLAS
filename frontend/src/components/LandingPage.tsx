@@ -5,6 +5,9 @@ import { SpotlightCard } from './reactbits/SpotlightCard';
 import { DecryptedText } from './reactbits/DecryptedText';
 import { CountUp } from './reactbits/CountUp';
 import { AsciiArchitecture } from './AsciiArchitecture';
+import { TiltedCard } from './reactbits/TiltedCard';
+import { ShinyText } from './reactbits/ShinyText';
+import { ParticlesBackground } from './reactbits/ParticlesBackground';
 
 interface LandingPageProps {
   onLaunchDashboard: () => void;
@@ -27,7 +30,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
   }, []);
 
   return (
-    <div className="bg-black text-white min-h-screen flex flex-col font-sans selection:bg-white selection:text-black relative">
+    <div className="bg-black text-white min-h-screen flex flex-col font-sans selection:bg-white selection:text-black relative overflow-hidden">
+      {/* Dynamic 3D Geometric Particles Canvas */}
+      <ParticlesBackground particleCount={40} particleColor="rgba(255, 255, 255, 0.4)" lineColor="rgba(255, 255, 255, 0.06)" />
       
       {/* Top Large Scroll Progress Bar (Design Showcase) */}
       <div className="fixed top-16 left-0 right-0 h-1.5 bg-neutral-900 z-40">
@@ -38,7 +43,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
       </div>
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 pt-16 pb-20 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <section className="relative z-10 max-w-7xl mx-auto px-6 pt-16 pb-20 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         
         {/* Left Column: Clear Natural Language + Decrypted Text Effect */}
         <div className="lg:col-span-7 space-y-6">
@@ -126,39 +131,43 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Box 1 (SpotlightCard) */}
-            <SpotlightCard className="flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-mono text-neutral-500 block mb-4">01 / HONEST PRICING</span>
-                <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3">
-                  No listing portal markups.
-                </h3>
-                <p className="text-sm sm:text-base text-neutral-400 leading-relaxed font-sans">
-                  Sellers often inflate public listing prices by 10% to 15% just to leave room for negotiation. ATLAS analyzes actual registered transaction records so you know what buyers actually paid.
-                </p>
-              </div>
-              <div className="pt-6 border-t border-neutral-800 mt-8 text-xs font-mono text-neutral-400 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                <span>Based on actual deeds, not asking prices</span>
-              </div>
-            </SpotlightCard>
+            {/* Box 1 (TiltedCard + SpotlightCard) */}
+            <TiltedCard maxTilt={7} scale={1.01} className="h-full">
+              <SpotlightCard className="flex flex-col justify-between h-full">
+                <div>
+                  <span className="text-xs font-mono text-neutral-500 block mb-4">01 / HONEST PRICING</span>
+                  <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3">
+                    No listing portal markups.
+                  </h3>
+                  <p className="text-sm sm:text-base text-neutral-400 leading-relaxed font-sans">
+                    Sellers often inflate public listing prices by 10% to 15% just to leave room for negotiation. ATLAS analyzes actual registered transaction records so you know what buyers actually paid.
+                  </p>
+                </div>
+                <div className="pt-6 border-t border-neutral-800 mt-8 text-xs font-mono text-neutral-400 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                  <span>Based on actual deeds, not asking prices</span>
+                </div>
+              </SpotlightCard>
+            </TiltedCard>
 
-            {/* Box 2 (SpotlightCard) */}
-            <SpotlightCard className="flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-mono text-neutral-500 block mb-4">02 / LEGAL TRANSPARENCY</span>
-                <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3">
-                  Official government circle rates.
-                </h3>
-                <p className="text-sm sm:text-base text-neutral-400 leading-relaxed font-sans">
-                  Instantly verify the legal minimum valuation and exact stamp duty based on the official Maharashtra Ready Reckoner gazette. No surprises at the registration office.
-                </p>
-              </div>
-              <div className="pt-6 border-t border-neutral-800 mt-8 text-xs font-mono text-neutral-400 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                <span>Official Ready Reckoner (ASR 2024–2026) verified</span>
-              </div>
-            </SpotlightCard>
+            {/* Box 2 (TiltedCard + SpotlightCard) */}
+            <TiltedCard maxTilt={7} scale={1.01} className="h-full">
+              <SpotlightCard className="flex flex-col justify-between h-full">
+                <div>
+                  <span className="text-xs font-mono text-neutral-500 block mb-4">02 / LEGAL TRANSPARENCY</span>
+                  <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3">
+                    Official government circle rates.
+                  </h3>
+                  <p className="text-sm sm:text-base text-neutral-400 leading-relaxed font-sans">
+                    Instantly verify the legal minimum valuation and exact stamp duty based on the official Maharashtra Ready Reckoner gazette. No surprises at the registration office.
+                  </p>
+                </div>
+                <div className="pt-6 border-t border-neutral-800 mt-8 text-xs font-mono text-neutral-400 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                  <span>Official Ready Reckoner (ASR 2024–2026) verified</span>
+                </div>
+              </SpotlightCard>
+            </TiltedCard>
           </div>
         </div>
       </section>
