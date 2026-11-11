@@ -1,6 +1,8 @@
 export interface PropertyInput {
   locality: string;
   bhk: number;
+  typology?: string;
+  is_rk?: boolean;
   carpet_sqft: number;
   floor: number;
   total_floors: number;
@@ -108,6 +110,7 @@ export interface ValuationResult {
     authority: string;
     formatted_address: string;
     bhk: number;
+    typology?: string;
     carpet_sqft: number;
     builtup_sqft_est: number;
     floor: number;

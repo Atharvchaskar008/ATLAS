@@ -493,6 +493,7 @@ class ValuationEngine:
                 "authority": loc_meta["authority"],
                 "formatted_address": reverse_geo["formatted_address"],
                 "bhk": bhk,
+                "typology": prop.get("typology") or ("1 RK" if (prop.get("is_rk") or (bhk == 1 and carpet <= 350)) else f"{bhk} BHK"),
                 "carpet_sqft": carpet,
                 "builtup_sqft_est": int(carpet * 1.3),
                 "floor": floor,

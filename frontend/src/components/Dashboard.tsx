@@ -281,7 +281,12 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
                     <div className="bg-neutral-950 rounded-xl p-3 border border-neutral-800">
                       <span className="text-neutral-500 block text-[11px]">Configuration</span>
-                      <span className="font-semibold text-white">{valuation.property_summary.bhk} BHK</span>
+                      <span className="font-semibold text-white">
+                        {valuation.property_summary.typology ||
+                          (valuation.property_summary.bhk === 1 && valuation.property_summary.carpet_sqft <= 350
+                            ? '1 RK'
+                            : `${valuation.property_summary.bhk} BHK`)}
+                      </span>
                     </div>
 
                     <div className="bg-neutral-950 rounded-xl p-3 border border-neutral-800">

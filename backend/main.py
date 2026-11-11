@@ -218,11 +218,13 @@ def chat_parse_and_evaluate(query: ChatQuery):
     # 1. Baseline intelligent entity extraction from text
     is_rk = bool(re.search(r'\b1\s*rk\b|\b1-rk\b|\bstudio\b', msg_lower))
     
-    # BHK extraction
+    # BHK & Typology extraction
     detected_bhk = 1 if is_rk else 2
     bhk_m = re.search(r'(\d+)\s*(?:bhk|bedroom|bed|rk)', msg_lower)
     if bhk_m:
         detected_bhk = int(bhk_m.group(1))
+
+    detected_typology = "1 RK" if is_rk else ("Studio" if "studio" in msg_lower else f"{detected_bhk} BHK")
 
     # Carpet Area extraction (if 1RK and omitted, estimate realistic 275 sq.ft carpet)
     detected_sqft = 275.0 if is_rk else (450.0 if detected_bhk == 1 else (650.0 if detected_bhk == 2 else 1050.0))
@@ -380,6 +382,8 @@ def chat_parse_and_evaluate(query: ChatQuery):
     extracted_prop = {
         "locality": detected_locality,
         "bhk": detected_bhk,
+        "typology": detected_typology,
+        "is_rk": is_rk,
         "carpet_sqft": detected_sqft,
         "floor": detected_floor,
         "total_floors": detected_total_floors,
@@ -442,8 +446,9 @@ Return ONLY JSON.
     max_l = val_data['value_range_lakhs']['max']
     corridor = f"₹{min_l / 100:.2f}Cr – ₹{max_l / 100:.2f}Cr" if max_l >= 100 else f"₹{min_l:.2f}L – ₹{max_l:.2f}L"
 
+    typology_display = extracted_prop.get("typology") or f"{extracted_prop['bhk']} BHK"
     ai_reply = (
-        f"For your {extracted_prop['bhk']} BHK ({extracted_prop['carpet_sqft']:.0f} sq.ft) in "
+        f"For your {typology_display} ({extracted_prop['carpet_sqft']:.0f} sq.ft) in "
         f"{val_data['property_summary']['locality']}, the engine calculates a Fair Market Value of "
         f"{dual_price} (Corridor: {corridor}), reflecting ₹{val_data['rate_per_sqft_carpet']:,}/sq.ft. "
         f"Official Maharashtra Ready Reckoner circle rate floor is ₹{val_data['government_benchmark']['government_floor_value_lakhs']:.2f} Lakhs."
