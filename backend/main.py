@@ -24,7 +24,8 @@ from data.maharashtra_registry import MAHARASHTRA_LOCALITY_HUBS, resolve_maharas
 app = FastAPI(
     title="A.T.L.A.S. Statewide Maharashtra Valuation API",
     description="Automated Terrain & Asset Location Assessment System - AI Property Valuation & Locality Intelligence",
-    version="2.0.0"
+    version="2.0.0",
+    redirect_slashes=False
 )
 
 router = APIRouter()
@@ -71,6 +72,7 @@ class SensitivityInput(BaseModel):
 
 # --- API Routes ---
 @router.api_route("/debug", methods=["GET", "POST"])
+@router.api_route("/debug/", methods=["GET", "POST"])
 def server_debug_info():
     return {
         "status": "online",
@@ -81,6 +83,7 @@ def server_debug_info():
 
 
 @router.get("/health")
+@router.get("/health/")
 def health_check():
     return {
         "status": "healthy",
@@ -92,6 +95,7 @@ def health_check():
 
 
 @router.get("/valuation/localities")
+@router.get("/valuation/localities/")
 def get_localities():
     """Return supported localities and micro-market hubs across Maharashtra."""
     hub_names = [h["locality"] for h in MAHARASHTRA_LOCALITY_HUBS]
@@ -103,12 +107,14 @@ def get_localities():
 
 
 @router.get("/valuation/maharashtra/hubs")
+@router.get("/valuation/maharashtra/hubs/")
 def get_maharashtra_hubs():
     """Return all 36-district calibrated regional hubs across Maharashtra."""
     return {"hubs": MAHARASHTRA_LOCALITY_HUBS}
 
 
 @router.get("/valuation/reverse-geocode")
+@router.get("/valuation/reverse-geocode/")
 def reverse_geocode(lat: float = Query(...), lng: float = Query(...)):
     """Reverse geocode ANY coordinate in Maharashtra to address & district."""
     addr = PlacesService.reverse_geocode(lat, lng)
@@ -124,6 +130,7 @@ def reverse_geocode(lat: float = Query(...), lng: float = Query(...)):
 
 
 @router.get("/valuation/geocode")
+@router.get("/valuation/geocode/")
 def geocode_address(query: str = Query(..., min_length=2)):
     """Search any address across Maharashtra and return matched coordinates."""
     results = PlacesService.geocode_address(query)
@@ -131,6 +138,7 @@ def geocode_address(query: str = Query(..., min_length=2)):
 
 
 @router.get("/valuation/live-amenities")
+@router.get("/valuation/live-amenities/")
 def get_live_amenities(lat: float = Query(...), lng: float = Query(...), radius: int = Query(1500)):
     """Query real-time live Overpass / OSM surrounding POIs."""
     pois = PlacesService.query_live_overpass_amenities(lat, lng, radius_m=radius)
@@ -138,6 +146,7 @@ def get_live_amenities(lat: float = Query(...), lng: float = Query(...), radius:
 
 
 @router.get("/valuation/surrounding-prices")
+@router.get("/valuation/surrounding-prices/")
 def get_surrounding_prices(lat: float = Query(...), lng: float = Query(...), base_rate: int = Query(10000)):
     """Get surrounding price percentiles and distance-decay radial gradient."""
     dist = PlacesService.calculate_surrounding_price_distribution(lat, lng, base_rate)
@@ -145,6 +154,7 @@ def get_surrounding_prices(lat: float = Query(...), lng: float = Query(...), bas
 
 
 @router.get("/valuation/infrastructure")
+@router.get("/valuation/infrastructure/")
 def get_infrastructure():
     """Return transit, tech park, and healthcare nodes for map rendering."""
     return {
@@ -153,6 +163,7 @@ def get_infrastructure():
 
 
 @router.post("/valuation/estimate")
+@router.post("/valuation/estimate/")
 def estimate_property(prop: PropertyInput):
     """Compute comprehensive valuation, ASR benchmark, SHAP waterfall, surrounding POIs, and Gemini AI analysis."""
     try:
@@ -164,6 +175,7 @@ def estimate_property(prop: PropertyInput):
 
 
 @router.post("/valuation/comps")
+@router.post("/valuation/comps/")
 def get_comparables(prop: PropertyInput):
     """Retrieve spatial nearest neighbor comps with pairwise adjustments."""
     prop_dict = prop.model_dump()
@@ -181,6 +193,7 @@ def get_comparables(prop: PropertyInput):
 
 
 @router.post("/valuation/sensitivity")
+@router.post("/valuation/sensitivity/")
 def simulate_sensitivity(sim: SensitivityInput):
     """Real-time 'What-If' sensitivity analysis."""
     base_dict = sim.base_property.model_dump()
@@ -213,6 +226,7 @@ def simulate_sensitivity(sim: SensitivityInput):
 GEMINI_QUOTA_EXHAUSTED = False
 
 @router.post("/valuation/chat-parse")
+@router.post("/valuation/chat-parse/")
 def chat_parse_and_evaluate(query: ChatQuery):
     """
     Natural Language property parser and valuation assistant:
@@ -474,6 +488,7 @@ Return ONLY JSON.
 
 
 @router.post("/valuation/report")
+@router.post("/valuation/report/")
 def generate_report(prop: PropertyInput):
     """Generate formal Appraisal Memorandum for banks, investors, or buyers."""
     prop_dict = prop.model_dump()
