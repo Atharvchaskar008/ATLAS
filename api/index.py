@@ -1,20 +1,21 @@
 import sys
 import os
+import json
+import urllib.parse
 
 # Ensure backend directory is in the Python search path
 backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend"))
 if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
-# Import the FastAPI application
 from main import app as fastapi_app
 
-# ASGI wrapper to restore the true request path rewritten by Vercel
 async def app(scope, receive, send):
     if scope["type"] in ("http", "websocket"):
-        headers = dict(scope.get("headers", []))
+        headers_list = scope.get("headers", [])
+        headers = dict(headers_list)
         
-        # Vercel passes the original user request URI in x-matched-path or x-forwarded-uri
+        # Check all possible routing headers provided by Vercel
         matched = (
             headers.get(b"x-matched-path", b"")
             or headers.get(b"x-forwarded-uri", b"")
@@ -25,14 +26,31 @@ async def app(scope, receive, send):
             if "1=" in route_matches:
                 for part in route_matches.split("&"):
                     if part.startswith("1="):
-                        import urllib.parse
                         sub_path = urllib.parse.unquote(part[2:])
                         matched = "/api/" + sub_path.lstrip("/")
                         break
 
         current_path = scope.get("path", "")
-        
-        # If Vercel provided the matched user path, ALWAYS prioritize it over internal function path
+
+        # Emergency diagnostic echo endpoint
+        if "echo" in current_path or "echo" in matched:
+            headers_str = {k.decode("utf-8", "ignore"): v.decode("utf-8", "ignore") for k, v in headers_list}
+            data = json.dumps({
+                "scope_path_original": current_path,
+                "matched_from_headers": matched,
+                "headers": headers_str
+            }, indent=2).encode("utf-8")
+            await send({
+                "type": "http.response.start",
+                "status": 200,
+                "headers": [(b"content-type", b"application/json")]
+            })
+            await send({
+                "type": "http.response.body",
+                "body": data
+            })
+            return
+
         if matched:
             target = matched
         else:
