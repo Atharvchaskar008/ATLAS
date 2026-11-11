@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShieldCheck, TrendingUp, Compass, FileCheck } from 'lucide-react';
+import { CornerCrosses } from './CornerCrosses';
 
 interface StackCard {
   id: string;
@@ -19,7 +20,7 @@ const CARDS: StackCard[] = [
     description: 'Online portals frequently list flats with a 10% to 15% asking premium. ATLAS calculates the actual transaction price based on registered sales deeds in the neighborhood.',
     metric: '10–15%',
     metricLabel: 'Average Portal Asking Markup Filtered',
-    icon: <TrendingUp className="w-5 h-5 text-black" />,
+    icon: <TrendingUp className="w-5 h-5 text-[var(--ink)]" />,
   },
   {
     id: '02',
@@ -28,7 +29,7 @@ const CARDS: StackCard[] = [
     description: 'Every valuation is anchored against the official Maharashtra IGR Ready Reckoner. You see the legal minimum benchmark and exact stamp duty before signing.',
     metric: 'ASR 2024–26',
     metricLabel: 'Official Circle Rate Compliance',
-    icon: <ShieldCheck className="w-5 h-5 text-black" />,
+    icon: <ShieldCheck className="w-5 h-5 text-[var(--ink)]" />,
   },
   {
     id: '03',
@@ -37,7 +38,7 @@ const CARDS: StackCard[] = [
     description: 'Automatically analyzes proximity to operational metros, expressways, schools, and employment centers to gauge long-term livability and appreciation.',
     metric: '3,000 m',
     metricLabel: 'Radial Infrastructure Radar',
-    icon: <Compass className="w-5 h-5 text-black" />,
+    icon: <Compass className="w-5 h-5 text-[var(--ink)]" />,
   },
   {
     id: '04',
@@ -46,28 +47,28 @@ const CARDS: StackCard[] = [
     description: 'Clear, concise property assessment summaries formatted for institutional loan underwriting, private negotiation, and instant buyer peace of mind.',
     metric: '80% LTV',
     metricLabel: 'Standard Bank Eligibility Guidance',
-    icon: <FileCheck className="w-5 h-5 text-black" />,
+    icon: <FileCheck className="w-5 h-5 text-[var(--ink)]" />,
   },
 ];
 
 export const ScrollStack: React.FC = () => {
   return (
-    <section className="py-28 bg-[#000000] border-t border-neutral-900">
+    <section className="py-24 bg-[var(--canvas)] border-t border-[var(--line)] transition-colors duration-250">
       <div className="max-w-5xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-20">
-          <span className="text-xs font-mono uppercase tracking-widest text-neutral-400 block mb-3">
-            System Capabilities
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <span className="text-[11px] font-mono uppercase tracking-widest text-[var(--ink-muted)] block mb-3">
+            02 // SYSTEM CAPABILITIES
           </span>
-          <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white">
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--ink)] font-sans">
             A smarter way to value property.
           </h2>
-          <p className="mt-4 text-base text-neutral-400 leading-relaxed font-sans">
+          <p className="mt-4 text-sm sm:text-base text-[var(--ink-secondary)] leading-relaxed font-sans">
             Built without technical jargon or speculative hype. Just honest, data-backed valuations for home buyers, sellers, and lenders.
           </p>
         </div>
 
-        {/* Stacking Cards Container: INVERTED WHITE CARDS ON BLACK CANVAS */}
+        {/* Stacking Cards Container */}
         <div className="relative space-y-8 pb-12">
           {CARDS.map((card, index) => {
             const topOffset = 100 + index * 24;
@@ -76,37 +77,38 @@ export const ScrollStack: React.FC = () => {
               <div
                 key={card.id}
                 style={{ top: `${topOffset}px` }}
-                className="sticky rounded-3xl bg-white text-black border-2 border-white p-8 sm:p-14 shadow-[0_25px_60px_rgba(0,0,0,0.6)] ring-1 ring-white/60 transition-all duration-300 hover:shadow-[0_30px_70px_rgba(255,255,255,0.15)]"
+                className="sticky relative has-crosses rounded-2xl bg-[var(--surface)] text-[var(--ink)] border border-[var(--line)] p-8 sm:p-12 shadow-sm transition-all duration-300 hover:border-[var(--line-strong)]"
               >
+                <CornerCrosses />
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                   {/* Left Column: Story */}
                   <div className="md:col-span-8 space-y-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-2xl bg-neutral-100 border border-neutral-200 flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-lg bg-[var(--surface-elevated)] border border-[var(--line)] flex items-center justify-center">
                         {card.icon}
                       </div>
-                      <span className="text-xs font-mono uppercase tracking-wider text-neutral-600 font-bold">
+                      <span className="text-xs font-mono uppercase tracking-wider text-[var(--ink-secondary)] font-medium">
                         {card.tag}
                       </span>
                     </div>
 
-                    <h3 className="font-display text-2xl sm:text-4xl font-extrabold text-black tracking-tight">
+                    <h3 className="text-2xl sm:text-3xl font-bold text-[var(--ink)] tracking-tight font-sans">
                       {card.title}
                     </h3>
 
-                    <p className="text-neutral-700 text-sm sm:text-base leading-relaxed font-sans max-w-xl">
+                    <p className="text-[var(--ink-secondary)] text-sm sm:text-base leading-relaxed font-sans max-w-xl">
                       {card.description}
                     </p>
                   </div>
 
-                  {/* Right Column: High-Impact Metric */}
-                  <div className="md:col-span-4 border-t md:border-t-0 md:border-l border-neutral-200 pt-6 md:pt-0 md:pl-10 flex flex-col justify-center">
-                    <div className="font-display text-4xl sm:text-6xl font-black text-black tracking-tight">
+                  {/* Right Column: Key Metric Highlight */}
+                  <div className="md:col-span-4 flex md:flex-col justify-between items-start md:items-end p-6 rounded-xl bg-[var(--surface-elevated)] border border-[var(--line)]">
+                    <span className="text-3xl sm:text-4xl font-mono font-bold text-[var(--ink)] tracking-tight">
                       {card.metric}
-                    </div>
-                    <div className="text-xs text-neutral-600 font-mono mt-1 font-medium">
+                    </span>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--ink-muted)] text-right mt-1 max-w-[140px]">
                       {card.metricLabel}
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>

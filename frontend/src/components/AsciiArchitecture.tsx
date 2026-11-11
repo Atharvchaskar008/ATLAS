@@ -1,144 +1,173 @@
 import React, { useState, useEffect } from 'react';
+import { CornerCrosses } from './CornerCrosses';
 
-// ASCII architectural blueprints representing the property valuation engine
-const ASCII_FRAMES = [
+// Pure architectural building elevation / structural CAD drawings
+// Zero marketing text - pure structural blueprint representation of prime real estate
+const BUILDING_FRAMES = [
+  // Frame 1: High-rise architectural tower with structural facade
 `
-  ┌──────────────────────────────────────────────────┐
-  │  ATLAS VALUATION ENGINE // SPATIAL MATRIX        │
-  │  LOC: 18.674° N, 73.844° E  •  ELEV: +582m        │
-  ├──────────────────────────────────────────────────┤
-  │                                                  │
-  │             ▲ [PENTHOUSE LEVEL 22]               │
-  │            /│\\                                  │
-  │           / │ \\                                 │
-  │          /  │  \\    ─── [TERRACE RESIDENCE]      │
-  │         ┌───┼───┐                                │
-  │         │ █ │ █ │    ▲                           │
-  │         │ █ │ █ │   /│\\  ─── [RESIDENTIAL CORE] │
-  │         ├───┼───┤  ┌─┼─┐                         │
-  │         │ █ │ █ │  │█│█│                         │
-  │         │ █ │ █ │  │█│█│    ─── [CARPET: 1200sf] │
-  │         ├───┼───┤  ├─┼─┤                         │
-  │         │ █ │ █ │  │█│█│                         │
-  │         ├───┼───┤  ├─┼─┤                         │
-  │  ═══════╧═══╧═══╧══╧═╧═╧══════════ [PARKING]     │
-  │   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                  │
-  │   ▲ CIRCLE RATE ANCHOR: IGR ASR 2024-2026        │
-  │   ▲ HEDONIC REGRESSION: REAL DEED MATCH (3.5k)   │
-  └──────────────────────────────────────────────────┘
+                     ▲
+                    ┌┼┐
+                    │││
+                   ┌┘│└┐
+                  ┌┘ │ └┐
+                  │  │  │
+                 ┌┴──┼──┴┐
+                 │ █ │ █ │
+                 │ █ │ █ │
+                ┌┴───┼───┴┐
+                │ █  │  █ │
+                │ █  │  █ │
+               ┌┴────┼────┴┐
+               │ █ █ │ █ █ │
+               │ █ █ │ █ █ │
+               │ █ █ │ █ █ │
+              ┌┴─────┼─────┴┐
+              │ █ █ █│█ █ █ │
+              │ █ █ █│█ █ █ │
+              │ █ █ █│█ █ █ │
+              │ █ █ █│█ █ █ │
+             ┌┴──────┼──────┴┐
+             │ █ █ █ │ █ █ █ │
+             │ █ █ █ │ █ █ █ │
+             │ █ █ █ │ █ █ █ │
+             │ █ █ █ │ █ █ █ │
+            ┌┴───────┼───────┴┐
+            │ █ █ █ █│█ █ █ █ │
+            │ █ █ █ █│█ █ █ █ │
+            │ █ █ █ █│█ █ █ █ │
+           ┌┴────────┼────────┴┐
+           │ █ █ █ █ │ █ █ █ █ │
+           │ █ █ █ █ │ █ █ █ █ │
+          ┌┴─────────┼─────────┴┐
+          │ ▓ ▓ ▓ ▓ ▓│▓ ▓ ▓ ▓ ▓ │
+          │ ▓ ▓ ▓ ▓ ▓│▓ ▓ ▓ ▓ ▓ │
+      ════╧══════════╧══════════╧════
+      ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 `,
+  // Frame 2: Structural load-bearing CAD scan with cross-bracing
 `
-  ┌──────────────────────────────────────────────────┐
-  │  ATLAS VALUATION ENGINE // GEOMETRIC SCAN        │
-  │  RADIAL POI: TRANSIT 0.69km • JOBS 4.4km         │
-  ├──────────────────────────────────────────────────┤
-  │                                                  │
-  │              ▲                                   │
-  │             /║\\      ─── [ZONING: RESIDENTIAL]   │
-  │            //║\\\\                                 │
-  │           // ║ \\\\    ─── [UDCPR COMPLIANT FSI]   │
-  │         ┌═══╦═╦═══┐                              │
-  │         │ █ ║ ║ █ │    ▲                         │
-  │         │ █ ║ ║ █ │   /║\\   ─── [STAMP DUTY: 6%] │
-  │         ├───╫─╫───┤  ┌═╬═┐                       │
-  │         │ █ ║ ║ █ │  │█║█│                       │
-  │         │ █ ║ ║ █ │  │█║█│   ─── [ASSET ID: #502]│
-  │         ├───╫─╫───┤  ├─╫─┤                       │
-  │         │ █ ║ ║ █ │  │█║█│                       │
-  │         ├───╫─╫───┤  ├─╫─┤                       │
-  │  ═══════╧═══╩═╩═══╧══╧═╩═╧══════════ [PODIUM]    │
-  │   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                  │
-  │   ▲ CONFIDENCE INTERVAL: 85% VERIFIED PARITY     │
-  │   ▲ DEPRECIATION CURVE: 16-YR STRUCTURAL RESIDUAL│
-  └──────────────────────────────────────────────────┘
+                     ▲
+                    ┌┼┐
+                    │││
+                   ┌┘│└┐
+                  ┌┘ │ └┐
+                  │ ╳│╳ │
+                 ┌┴──┼──┴┐
+                 │ ╳ │ ╳ │
+                 │ ╳ │ ╳ │
+                ┌┴───┼───┴┐
+                │ ╳  │  ╳ │
+                │ ╳  │  ╳ │
+               ┌┴────┼────┴┐
+               │ ╳ ╳ │ ╳ ╳ │
+               │ ╳ ╳ │ ╳ ╳ │
+               │ ╳ ╳ │ ╳ ╳ │
+              ┌┴─────┼─────┴┐
+              │ ╳ ╳ ╳│╳ ╳ ╳ │
+              │ ╳ ╳ ╳│╳ ╳ ╳ │
+              │ ╳ ╳ ╳│╳ ╳ ╳ │
+              │ ╳ ╳ ╳│╳ ╳ ╳ │
+             ┌┴──────┼──────┴┐
+             │ ╳ ╳ ╳ │ ╳ ╳ ╳ │
+             │ ╳ ╳ ╳ │ ╳ ╳ ╳ │
+             │ ╳ ╳ ╳ │ ╳ ╳ ╳ │
+             │ ╳ ╳ ╳ │ ╳ ╳ ╳ │
+            ┌┴───────┼───────┴┐
+            │ ╳ ╳ ╳ ╳│╳ ╳ ╳ ╳ │
+            │ ╳ ╳ ╳ ╳│╳ ╳ ╳ ╳ │
+            │ ╳ ╳ ╳ ╳│╳ ╳ ╳ ╳ │
+           ┌┴────────┼────────┴┐
+           │ ╳ ╳ ╳ ╳ │ ╳ ╳ ╳ ╳ │
+           │ ╳ ╳ ╳ ╳ │ ╳ ╳ ╳ ╳ │
+          ┌┴─────────┼─────────┴┐
+          │ ▓ ▓ ▓ ▓ ▓│▓ ▓ ▓ ▓ ▓ │
+          │ ▓ ▓ ▓ ▓ ▓│▓ ▓ ▓ ▓ ▓ │
+      ════╧══════════╧══════════╧════
+      ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 `,
+  // Frame 3: Contemporary stepped isometric facade
 `
-  ┌──────────────────────────────────────────────────┐
-  │  ATLAS VALUATION ENGINE // REGISTERED PARITY     │
-  │  STATE: MAHARASHTRA • 36 DISTRICTS ACTIVE        │
-  ├──────────────────────────────────────────────────┤
-  │                                                  │
-  │             ▲                                    │
-  │            / \\       ─── [FAIR MARKET VALUE]     │
-  │           /   \\                                  │
-  │          /     \\     ─── [NO SPECULATIVE MARKUP] │
-  │         ┌───────┐                                │
-  │         │ ▓ ▓ ▓ │    ▲                           │
-  │         │ ▓ ▓ ▓ │   / \\   ─── [TRANSIT CORRIDOR] │
-  │         ├───────┤  ┌───┐                         │
-  │         │ ▓ ▓ ▓ │  │▓ ▓│                         │
-  │         │ ▓ ▓ ▓ │  │▓ ▓│    ─── [LTV 80% READY]  │
-  │         ├───────┤  ├───┤                         │
-  │         │ ▓ ▓ ▓ │  │▓ ▓│                         │
-  │         ├───────┤  ├───┤                         │
-  │  ═══════╧═══════╧══╧═══╧══════════ [FOUNDATION]  │
-  │   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░                  │
-  │   ▲ ZERO LISTING MARKUP: TRUE TRANSACTED DEED    │
-  │   ▲ BANK APPRAISAL SPECIFICATION MEMORANDUM      │
-  └──────────────────────────────────────────────────┘
+                     ▲
+                    ┌┴┐
+                   ┌┘ └┐
+                  ┌┘   └┐
+                 ┌┘  █  └┐
+                ┌┴───────┴┐
+                │ █ █ █ █ │
+                │ █ █ █ █ │
+               ┌┴─────────┴┐
+               │ █ █ █ █ █ │
+               │ █ █ █ █ █ │
+              ┌┴───────────┴┐
+              │ █ █ █ █ █ █ │
+              │ █ █ █ █ █ █ │
+              │ █ █ █ █ █ █ │
+             ┌┴─────────────┴┐
+             │ █ █ █ █ █ █ █ │
+             │ █ █ █ █ █ █ █ │
+             │ █ █ █ █ █ █ █ │
+            ┌┴───────────────┴┐
+            │ █ █ █ █ █ █ █ █ │
+            │ █ █ █ █ █ █ █ █ │
+            │ █ █ █ █ █ █ █ █ │
+           ┌┴─────────────────┴┐
+           │ █ █ █ █ █ █ █ █ █ │
+           │ █ █ █ █ █ █ █ █ █ │
+          ┌┴───────────────────┴┐
+          │ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓│
+          │ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓ ▓▓│
+      ════╧═════════════════════╧════
+      ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 `
 ];
 
 export const AsciiArchitecture: React.FC = () => {
   const [frameIndex, setFrameIndex] = useState(0);
-  const [ticker, setTicker] = useState('CALIBRATING SATELLITE RADAR...');
 
   useEffect(() => {
-    const frameTimer = setInterval(() => {
-      setFrameIndex((prev) => (prev + 1) % ASCII_FRAMES.length);
-    }, 2800);
-
-    const tickers = [
-      'SCANNING MAHARASHTRA IGR CIRCLE RATES (ASR 2024-26)...',
-      'CORRELATING 3,500+ REGISTERED SALES COMPS...',
-      'INTERPOLATING RADIAL TRANSIT & EMPLOYMENT HUBS...',
-      'APPLYING UDCPR RESIDUAL PLOT RECKONER...',
-      'CALCULATING FAIR MARKET VALUE IN LAKHS & CRORES...'
-    ];
-
-    let tickerIdx = 0;
-    const tickerTimer = setInterval(() => {
-      tickerIdx = (tickerIdx + 1) % tickers.length;
-      setTicker(tickers[tickerIdx]);
+    const timer = setInterval(() => {
+      setFrameIndex((prev) => (prev + 1) % BUILDING_FRAMES.length);
     }, 3200);
-
-    return () => {
-      clearInterval(frameTimer);
-      clearInterval(tickerTimer);
-    };
+    return () => clearInterval(timer);
   }, []);
 
   return (
-    <div className="w-full rounded-2xl border border-white/40 bg-[#0A0A0A] p-5 shadow-[0_0_40px_rgba(255,255,255,0.06)] hover:border-white transition-all duration-300 relative overflow-hidden font-mono group">
-      {/* Terminal Title Bar */}
-      <div className="flex items-center justify-between pb-3 border-b border-white/15 text-[11px] text-neutral-400">
-        <div className="flex items-center space-x-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 inline-block" />
-          <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80 inline-block" />
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
-          <span className="ml-2 text-neutral-200 font-bold tracking-wider">engine.atlas // spatial_view</span>
-        </div>
-        <div className="flex items-center space-x-2 text-[10px] text-neutral-400">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
-          <span className="text-emerald-300 font-semibold">LIVE SENSOR</span>
-        </div>
-      </div>
+    <div className="relative has-crosses group">
+      {/* Architectural Corner Crosses */}
+      <CornerCrosses />
 
-      {/* ASCII Art Canvas */}
-      <div className="relative py-2 overflow-x-auto select-none">
-        <pre className="text-[11px] sm:text-xs leading-[1.3] text-neutral-200 font-mono tracking-tight whitespace-pre font-bold">
-          {ASCII_FRAMES[frameIndex]}
-        </pre>
-      </div>
+      {/* Terminal Container */}
+      <div className="relative rounded-2xl border border-[var(--line)] bg-[var(--surface)] hover:border-[var(--line-strong)] transition-all duration-300 p-5 sm:p-6 shadow-sm overflow-hidden select-none">
+        
+        {/* Terminal Header */}
+        <div className="flex items-center justify-between pb-3 mb-3 border-b border-[var(--line)]">
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-[var(--ink)] opacity-80" />
+            <span className="text-[11px] font-mono tracking-widest uppercase text-[var(--ink-secondary)]">
+              STRUCTURAL ELEVATION // 1:500
+            </span>
+          </div>
 
-      {/* Terminal Status Footer */}
-      <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[10px] text-neutral-400">
-        <div className="flex items-center space-x-1.5 truncate">
-          <span className="text-emerald-400 font-bold">&gt;</span>
-          <span className="text-neutral-200 truncate">{ticker}</span>
+          <div className="flex items-center space-x-3 text-[10px] font-mono text-[var(--ink-muted)]">
+            <span className="hidden sm:inline">CAD REV 4.2</span>
+            <span className="px-1.5 py-0.5 rounded border border-[var(--line)]">
+              AXIS Z+
+            </span>
+          </div>
         </div>
-        <div className="text-neutral-300 whitespace-nowrap font-semibold">
-          FRAME 0{frameIndex + 1} / 03
+
+        {/* ASCII Drawing Canvas */}
+        <div className="relative flex justify-center py-2 overflow-x-auto scrollbar-none">
+          <pre className="font-mono text-[10px] sm:text-xs leading-[1.12] text-[var(--ink)] tracking-wider whitespace-pre selection:bg-[var(--ink)] selection:text-[var(--canvas)] transition-opacity duration-300 opacity-95 group-hover:opacity-100">
+            {BUILDING_FRAMES[frameIndex]}
+          </pre>
+        </div>
+
+        {/* Minimal Blueprint Footer */}
+        <div className="pt-3 mt-2 border-t border-[var(--line)] flex items-center justify-between text-[10px] font-mono text-[var(--ink-muted)]">
+          <span>COORDS: 18.969°N 72.842°E</span>
+          <span className="text-[var(--ink-secondary)]">SCALE • METRIC</span>
         </div>
       </div>
     </div>
@@ -146,4 +175,3 @@ export const AsciiArchitecture: React.FC = () => {
 };
 
 export default AsciiArchitecture;
-

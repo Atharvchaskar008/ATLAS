@@ -59,3 +59,9 @@ Thumbs.db
 *.log
 logs/
 
+# Local Submission & Presentation Docs (untracked by git)
+submission/
+*.local.md
+docs/
+
+
