@@ -41,7 +41,24 @@ class ValuationEngine:
         self.infrastructure = INFRASTRUCTURE_NODES + MAHARASHTRA_SURROUNDING_LANDMARKS
         self.seed_comps = list(BENCHMARK_PROPERTIES_SEED)
         
-        # Build comprehensive statewide training dataset & spatial index
+        # High-Speed Cached Initialization for Vercel / Serverless (<0.25s cold start)
+        import os
+        cache_path = os.path.join(os.path.dirname(__file__), "engine_cache.pkl")
+        if os.path.exists(cache_path):
+            try:
+                import pickle
+                with open(cache_path, "rb") as f:
+                    cache = pickle.load(f)
+                self.all_comps = cache["all_comps"]
+                self.model = cache["model"]
+                self.scaler = cache["scaler"]
+                self.comps_coords = cache["comps_coords"]
+                self.comps_kdtree = cKDTree(self.comps_coords)
+                return
+            except Exception as e:
+                pass
+
+        # Fallback: Build comprehensive statewide training dataset & spatial index
         self.all_comps = self._expand_statewide_dataset()
         self.scaler = StandardScaler()
         self.model = None
