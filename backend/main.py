@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
@@ -26,6 +26,8 @@ app = FastAPI(
     description="Automated Terrain & Asset Location Assessment System - AI Property Valuation & Locality Intelligence",
     version="2.0.0"
 )
+
+router = APIRouter()
 
 # Enable CORS for frontend development
 app.add_middleware(
@@ -68,7 +70,7 @@ class SensitivityInput(BaseModel):
 
 
 # --- API Routes ---
-@app.get("/api/health")
+@router.get("/health")
 def health_check():
     return {
         "status": "healthy",
@@ -79,7 +81,7 @@ def health_check():
     }
 
 
-@app.get("/api/valuation/localities")
+@router.get("/valuation/localities")
 def get_localities():
     """Return supported localities and micro-market hubs across Maharashtra."""
     hub_names = [h["locality"] for h in MAHARASHTRA_LOCALITY_HUBS]
@@ -90,13 +92,13 @@ def get_localities():
     }
 
 
-@app.get("/api/valuation/maharashtra/hubs")
+@router.get("/valuation/maharashtra/hubs")
 def get_maharashtra_hubs():
     """Return all 36-district calibrated regional hubs across Maharashtra."""
     return {"hubs": MAHARASHTRA_LOCALITY_HUBS}
 
 
-@app.get("/api/valuation/reverse-geocode")
+@router.get("/valuation/reverse-geocode")
 def reverse_geocode(lat: float = Query(...), lng: float = Query(...)):
     """Reverse geocode ANY coordinate in Maharashtra to address & district."""
     addr = PlacesService.reverse_geocode(lat, lng)
@@ -111,28 +113,28 @@ def reverse_geocode(lat: float = Query(...), lng: float = Query(...)):
     }
 
 
-@app.get("/api/valuation/geocode")
+@router.get("/valuation/geocode")
 def geocode_address(query: str = Query(..., min_length=2)):
     """Search any address across Maharashtra and return matched coordinates."""
     results = PlacesService.geocode_address(query)
     return {"results": results}
 
 
-@app.get("/api/valuation/live-amenities")
+@router.get("/valuation/live-amenities")
 def get_live_amenities(lat: float = Query(...), lng: float = Query(...), radius: int = Query(1500)):
     """Query real-time live Overpass / OSM surrounding POIs."""
     pois = PlacesService.query_live_overpass_amenities(lat, lng, radius_m=radius)
     return {"amenities": pois}
 
 
-@app.get("/api/valuation/surrounding-prices")
+@router.get("/valuation/surrounding-prices")
 def get_surrounding_prices(lat: float = Query(...), lng: float = Query(...), base_rate: int = Query(10000)):
     """Get surrounding price percentiles and distance-decay radial gradient."""
     dist = PlacesService.calculate_surrounding_price_distribution(lat, lng, base_rate)
     return {"price_distribution": dist}
 
 
-@app.get("/api/valuation/infrastructure")
+@router.get("/valuation/infrastructure")
 def get_infrastructure():
     """Return transit, tech park, and healthcare nodes for map rendering."""
     return {
@@ -140,7 +142,7 @@ def get_infrastructure():
     }
 
 
-@app.post("/api/valuation/estimate")
+@router.post("/valuation/estimate")
 def estimate_property(prop: PropertyInput):
     """Compute comprehensive valuation, ASR benchmark, SHAP waterfall, surrounding POIs, and Gemini AI analysis."""
     try:
@@ -151,7 +153,7 @@ def estimate_property(prop: PropertyInput):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/api/valuation/comps")
+@router.post("/valuation/comps")
 def get_comparables(prop: PropertyInput):
     """Retrieve spatial nearest neighbor comps with pairwise adjustments."""
     prop_dict = prop.model_dump()
@@ -168,7 +170,7 @@ def get_comparables(prop: PropertyInput):
     return {"comparables": comps}
 
 
-@app.post("/api/valuation/sensitivity")
+@router.post("/valuation/sensitivity")
 def simulate_sensitivity(sim: SensitivityInput):
     """Real-time 'What-If' sensitivity analysis."""
     base_dict = sim.base_property.model_dump()
@@ -200,7 +202,7 @@ def simulate_sensitivity(sim: SensitivityInput):
 
 GEMINI_QUOTA_EXHAUSTED = False
 
-@app.post("/api/valuation/chat-parse")
+@router.post("/valuation/chat-parse")
 def chat_parse_and_evaluate(query: ChatQuery):
     """
     Natural Language property parser and valuation assistant:
@@ -461,7 +463,7 @@ Return ONLY JSON.
     }
 
 
-@app.post("/api/valuation/report")
+@router.post("/valuation/report")
 def generate_report(prop: PropertyInput):
     """Generate formal Appraisal Memorandum for banks, investors, or buyers."""
     prop_dict = prop.model_dump()
@@ -474,24 +476,31 @@ def generate_report(prop: PropertyInput):
     }
 
 
+# Mount the API router both with /api and at root for full path compatibility
+app.include_router(router, prefix="/api")
+app.include_router(router, prefix="")
+
+
 # --- Production Static Files & SPA Routing ---
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
-if os.path.exists(frontend_dist):
-    assets_dir = os.path.join(frontend_dist, "assets")
-    if os.path.exists(assets_dir):
-        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+# Only serve static frontend files if NOT running in Vercel serverless mode
+if not os.environ.get("VERCEL"):
+    frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
+    if os.path.exists(frontend_dist):
+        assets_dir = os.path.join(frontend_dist, "assets")
+        if os.path.exists(assets_dir):
+            app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
-    @app.get("/{full_path:path}")
-    def serve_frontend_spa(full_path: str):
-        if full_path.startswith("api"):
-            raise HTTPException(status_code=404, detail="Not Found")
-        file_path = os.path.join(frontend_dist, full_path)
-        if os.path.exists(file_path) and os.path.isfile(file_path):
-            return FileResponse(file_path)
-        return FileResponse(os.path.join(frontend_dist, "index.html"))
+        @app.get("/{full_path:path}")
+        def serve_frontend_spa(full_path: str):
+            if full_path.startswith("api") or full_path.startswith("valuation") or full_path == "health":
+                raise HTTPException(status_code=404, detail="Not Found")
+            file_path = os.path.join(frontend_dist, full_path)
+            if os.path.exists(file_path) and os.path.isfile(file_path):
+                return FileResponse(file_path)
+            return FileResponse(os.path.join(frontend_dist, "index.html"))
 
 
 if __name__ == "__main__":
