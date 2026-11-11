@@ -109,35 +109,35 @@ export const AsciiArchitecture: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full rounded-2xl border border-neutral-800 bg-[#0A0A0A] p-5 shadow-2xl relative overflow-hidden font-mono group">
+    <div className="w-full rounded-2xl border border-white/40 bg-[#0A0A0A] p-5 shadow-[0_0_40px_rgba(255,255,255,0.06)] hover:border-white transition-all duration-300 relative overflow-hidden font-mono group">
       {/* Terminal Title Bar */}
-      <div className="flex items-center justify-between pb-3 border-b border-neutral-800 text-[11px] text-neutral-400">
+      <div className="flex items-center justify-between pb-3 border-b border-white/15 text-[11px] text-neutral-400">
         <div className="flex items-center space-x-2">
           <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 inline-block" />
           <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80 inline-block" />
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
-          <span className="ml-2 text-neutral-300 font-bold">engine.atlas // spatial_view</span>
+          <span className="ml-2 text-neutral-200 font-bold tracking-wider">engine.atlas // spatial_view</span>
         </div>
-        <div className="flex items-center space-x-2 text-[10px] text-neutral-500">
+        <div className="flex items-center space-x-2 text-[10px] text-neutral-400">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
-          <span>LIVE SENSOR</span>
+          <span className="text-emerald-300 font-semibold">LIVE SENSOR</span>
         </div>
       </div>
 
       {/* ASCII Art Canvas */}
       <div className="relative py-2 overflow-x-auto select-none">
-        <pre className="text-[11px] sm:text-xs leading-[1.3] text-neutral-300 font-mono tracking-tight whitespace-pre font-bold">
+        <pre className="text-[11px] sm:text-xs leading-[1.3] text-neutral-200 font-mono tracking-tight whitespace-pre font-bold">
           {ASCII_FRAMES[frameIndex]}
         </pre>
       </div>
 
       {/* Terminal Status Footer */}
-      <div className="pt-3 border-t border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[10px] text-neutral-500">
+      <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[10px] text-neutral-400">
         <div className="flex items-center space-x-1.5 truncate">
           <span className="text-emerald-400 font-bold">&gt;</span>
-          <span className="text-neutral-300 truncate">{ticker}</span>
+          <span className="text-neutral-200 truncate">{ticker}</span>
         </div>
-        <div className="text-neutral-400 whitespace-nowrap">
+        <div className="text-neutral-300 whitespace-nowrap font-semibold">
           FRAME 0{frameIndex + 1} / 03
         </div>
       </div>

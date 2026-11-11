@@ -76,7 +76,7 @@ export const ScrollStack: React.FC = () => {
               <div
                 key={card.id}
                 style={{ top: `${topOffset}px` }}
-                className="sticky rounded-3xl bg-white text-black border border-neutral-200 p-8 sm:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-300 hover:shadow-[0_25px_60px_rgba(255,255,255,0.08)]"
+                className="sticky rounded-3xl bg-white text-black border-2 border-white p-8 sm:p-14 shadow-[0_25px_60px_rgba(0,0,0,0.6)] ring-1 ring-white/60 transition-all duration-300 hover:shadow-[0_30px_70px_rgba(255,255,255,0.15)]"
               >
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                   {/* Left Column: Story */}

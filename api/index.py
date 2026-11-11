@@ -8,3 +8,4 @@ if backend_dir not in sys.path:
 
 # Import the FastAPI application
 from main import app
+

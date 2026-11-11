@@ -91,10 +91,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* BOX 1: INPUT BOX (Left Column: 5 Cols) */}
-        <section className="lg:col-span-5 bg-[#0C0C0C] rounded-3xl border border-neutral-800 shadow-2xl p-6 sm:p-8 flex flex-col justify-between">
+        <section className="lg:col-span-5 bg-[#0A0A0A] rounded-3xl border border-white/40 hover:border-white/70 shadow-[0_0_45px_rgba(255,255,255,0.06)] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300">
           <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
+            <div className="flex items-center justify-between pb-4 border-b border-white/15">
               <div>
                 <h2 className="font-display font-bold text-lg text-white">
                   Property Specifications
@@ -106,7 +106,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
               {inputText && (
                 <button
                   onClick={() => setInputText('')}
-                  className="text-xs font-sans text-neutral-500 hover:text-white transition-colors"
+                  className="text-xs font-sans text-neutral-400 hover:text-white transition-colors px-2 py-1 rounded-md border border-white/20 hover:border-white/50"
                 >
                   Clear
                 </button>
@@ -120,7 +120,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 onChange={(e) => setInputText(e.target.value)}
                 rows={9}
                 placeholder="Type or paste property details in simple words...&#10;&#10;e.g., 2 BHK apartment in Moshi, Pune, 600 sqft on 2nd floor with covered parking, 16 years old&#10;or 3 BHK penthouse in Bandra West 1200 sqft on 14th floor with 2 covered parkings"
-                className="w-full text-sm font-sans leading-relaxed text-white placeholder:text-neutral-500 bg-neutral-900/60 rounded-2xl p-4 border border-neutral-800 focus:border-white focus:bg-neutral-950 focus:outline-none transition-all resize-none"
+                className="w-full text-sm font-sans leading-relaxed text-white placeholder:text-neutral-500 bg-[#121212] rounded-2xl p-4 border border-white/30 focus:border-white focus:ring-1 focus:ring-white/50 focus:outline-none transition-all resize-none shadow-inner"
               />
             </div>
 
@@ -136,15 +136,15 @@ export const Dashboard: React.FC<DashboardProps> = () => {
               />
 
               {attachedFile ? (
-                <div className="border border-neutral-700 rounded-2xl p-3 flex items-center justify-between text-xs font-sans bg-neutral-900">
+                <div className="border border-white/40 rounded-2xl p-3 flex items-center justify-between text-xs font-sans bg-[#121212]">
                   <div className="flex items-center space-x-2.5 truncate">
                     <FileText className="w-4 h-4 flex-shrink-0 text-white" />
                     <span className="truncate font-medium text-white">{attachedFile.name}</span>
-                    <span className="text-neutral-500">({(attachedFile.size / 1024).toFixed(0)} KB)</span>
+                    <span className="text-neutral-400">({(attachedFile.size / 1024).toFixed(0)} KB)</span>
                   </div>
                   <button
                     onClick={handleRemoveFile}
-                    className="text-neutral-500 hover:text-white p-1"
+                    className="text-neutral-400 hover:text-white p-1"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -152,9 +152,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
               ) : (
                 <label
                   htmlFor="doc-attachment"
-                  className="border border-dashed border-neutral-800 hover:border-neutral-600 rounded-2xl p-3.5 cursor-pointer flex items-center justify-center space-x-2 text-xs font-sans text-neutral-400 hover:text-white bg-neutral-950/60 hover:bg-neutral-900 transition-colors"
+                  className="border border-dashed border-white/35 hover:border-white/80 rounded-2xl p-3.5 cursor-pointer flex items-center justify-center space-x-2 text-xs font-sans text-neutral-300 hover:text-white bg-[#101010] hover:bg-[#151515] transition-all"
                 >
-                  <Paperclip className="w-3.5 h-3.5 text-neutral-500" />
+                  <Paperclip className="w-3.5 h-3.5 text-neutral-400" />
                   <span>Attach floor plan, deed, or 7/12 extract (Optional)</span>
                 </label>
               )}
@@ -162,15 +162,15 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           </div>
 
           {/* Action Footer */}
-          <div className="pt-6 mt-6 border-t border-neutral-800 flex items-center justify-between">
-            <span className="text-xs text-neutral-500 font-mono">
+          <div className="pt-6 mt-6 border-t border-white/15 flex items-center justify-between">
+            <span className="text-xs text-neutral-400 font-mono">
               Natural language input
             </span>
 
             <button
               onClick={handleRunAssessment}
               disabled={loading || !inputText.trim()}
-              className="bg-white text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-500 disabled:cursor-not-allowed px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider flex items-center space-x-2 transition-all active:scale-95 shadow-lg shadow-white/5"
+              className="bg-white text-black hover:bg-neutral-200 disabled:bg-neutral-900 disabled:text-neutral-600 disabled:cursor-not-allowed px-7 py-3 rounded-full text-xs font-bold uppercase tracking-wider flex items-center space-x-2 transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
             >
               <span>{loading ? 'Evaluating...' : 'Calculate Fair Value'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -180,10 +180,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
 
         {/* BOX 2: OUTPUT BOX (Right Column: 7 Cols) */}
-        <section className="lg:col-span-7 bg-[#0C0C0C] rounded-3xl border border-neutral-800 shadow-2xl p-6 sm:p-8 flex flex-col justify-between">
+        <section className="lg:col-span-7 bg-[#0A0A0A] rounded-3xl border border-white/40 hover:border-white/70 shadow-[0_0_45px_rgba(255,255,255,0.06)] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 min-h-[520px]">
           <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
+            <div className="flex items-center justify-between pb-4 border-b border-white/15">
               <div>
                 <h2 className="font-display font-bold text-lg text-white">
                   Property Valuation Engine
@@ -197,7 +197,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={handleCopySummary}
-                    className="text-xs font-sans text-neutral-400 hover:text-white px-3 py-1.5 rounded-full border border-neutral-800 hover:border-neutral-600 transition-colors flex items-center gap-1.5"
+                    className="text-xs font-sans text-neutral-300 hover:text-white px-3 py-1.5 rounded-full border border-white/30 hover:border-white transition-colors flex items-center gap-1.5 bg-[#121212]"
                   >
                     {copied ? <Check className="w-3 h-3 text-emerald-400" /> : null}
                     <span>{copied ? 'Copied' : 'Copy'}</span>
@@ -205,7 +205,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   
                   <button
                     onClick={() => window.print()}
-                    className="text-xs font-sans text-neutral-400 hover:text-white px-3 py-1.5 rounded-full border border-neutral-800 hover:border-neutral-600 transition-colors flex items-center gap-1.5"
+                    className="text-xs font-sans text-neutral-300 hover:text-white px-3 py-1.5 rounded-full border border-white/30 hover:border-white transition-colors flex items-center gap-1.5 bg-[#121212]"
                   >
                     <Printer className="w-3 h-3 text-neutral-400" />
                     <span>Print</span>
@@ -216,7 +216,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
             {/* Error Message */}
             {error && (
-              <div className="p-4 rounded-2xl bg-red-950/40 border border-red-800 text-xs font-sans text-red-300">
+              <div className="p-4 rounded-2xl bg-red-950/40 border border-red-500/50 text-xs font-sans text-red-300">
                 {error}
               </div>
             )}
@@ -233,7 +233,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
                   return (
                     <TiltedCard maxTilt={6} scale={1.01} className="w-full">
-                      <div className="bg-neutral-950 rounded-2xl p-6 border border-neutral-800 shadow-xl shadow-black/60">
+                      <div className="bg-gradient-to-b from-[#161616] to-[#0A0A0A] rounded-2xl p-6 border border-white/40 hover:border-white/70 transition-colors shadow-[0_0_40px_rgba(255,255,255,0.07)]">
                         <span className="text-xs font-mono uppercase tracking-widest text-neutral-400 block mb-1">
                           Estimated Fair Market Value
                         </span>
@@ -242,12 +242,12 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                           <span className="font-display text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
                             <ShinyText text={dual.full} speed={3.5} />
                           </span>
-                          <span className="text-sm font-mono text-neutral-400 font-medium">
+                          <span className="text-sm font-mono text-neutral-300 font-medium">
                             {dual.alt} • ₹{valuation.rate_per_sqft_carpet.toLocaleString()} / sq.ft
                           </span>
                         </div>
 
-                        <div className="mt-2 text-xs text-neutral-500 font-sans">
+                        <div className="mt-2 text-xs text-neutral-400 font-sans">
                           Estimated fair range: {rangeMin.main} – {rangeMax.main} (85% registered comps parity)
                         </div>
                       </div>
@@ -256,31 +256,31 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 })()}
 
                 {/* 2. Bank Underwriting Status Badge */}
-                <div className="bg-emerald-950/30 border border-emerald-800/80 rounded-2xl p-4 flex items-center justify-between text-xs font-sans text-emerald-300">
+                <div className="bg-emerald-950/30 border border-emerald-400/50 rounded-2xl p-4 flex items-center justify-between text-xs font-sans text-emerald-200 shadow-[0_0_25px_rgba(16,185,129,0.08)]">
                   <div className="flex items-center space-x-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                     <span className="font-semibold">
                       Bank Verdict: {valuation.gemini_ai_layer?.appraisal_verdict || 'Fair Market Parity'}
                     </span>
                   </div>
-                  <span className="text-emerald-400 font-medium">
+                  <span className="text-emerald-300 font-medium">
                     Standard 80% Loan Eligible
                   </span>
                 </div>
 
                 {/* 3. Core Property Specifications Grid */}
                 <div>
-                  <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 block mb-2.5">
+                  <span className="text-xs font-mono uppercase tracking-widest text-neutral-400 block mb-2.5">
                     Property Specifications
                   </span>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs font-sans">
-                    <div className="bg-neutral-950 rounded-xl p-3 border border-neutral-800">
-                      <span className="text-neutral-500 block text-[11px]">Location</span>
+                    <div className="bg-[#121212] rounded-xl p-3 border border-white/30 hover:border-white/70 transition-colors">
+                      <span className="text-neutral-400 block text-[11px]">Location</span>
                       <span className="font-semibold text-white">{valuation.property_summary.locality}</span>
                     </div>
 
-                    <div className="bg-neutral-950 rounded-xl p-3 border border-neutral-800">
-                      <span className="text-neutral-500 block text-[11px]">Configuration</span>
+                    <div className="bg-[#121212] rounded-xl p-3 border border-white/30 hover:border-white/70 transition-colors">
+                      <span className="text-neutral-400 block text-[11px]">Configuration</span>
                       <span className="font-semibold text-white">
                         {valuation.property_summary.typology ||
                           (valuation.property_summary.bhk === 1 && valuation.property_summary.carpet_sqft <= 350
@@ -289,23 +289,23 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                       </span>
                     </div>
 
-                    <div className="bg-neutral-950 rounded-xl p-3 border border-neutral-800">
-                      <span className="text-neutral-500 block text-[11px]">Carpet Area</span>
+                    <div className="bg-[#121212] rounded-xl p-3 border border-white/30 hover:border-white/70 transition-colors">
+                      <span className="text-neutral-400 block text-[11px]">Carpet Area</span>
                       <span className="font-semibold text-white">{valuation.property_summary.carpet_sqft} sq.ft</span>
                     </div>
 
-                    <div className="bg-neutral-950 rounded-xl p-3 border border-neutral-800">
-                      <span className="text-neutral-500 block text-[11px]">Floor Level</span>
+                    <div className="bg-[#121212] rounded-xl p-3 border border-white/30 hover:border-white/70 transition-colors">
+                      <span className="text-neutral-400 block text-[11px]">Floor Level</span>
                       <span className="font-semibold text-white">{valuation.property_summary.floor} of {valuation.property_summary.total_floors}</span>
                     </div>
 
-                    <div className="bg-neutral-950 rounded-xl p-3 border border-neutral-800">
-                      <span className="text-neutral-500 block text-[11px]">Building Age</span>
+                    <div className="bg-[#121212] rounded-xl p-3 border border-white/30 hover:border-white/70 transition-colors">
+                      <span className="text-neutral-400 block text-[11px]">Building Age</span>
                       <span className="font-semibold text-white">{valuation.property_summary.age_years} Years</span>
                     </div>
 
-                    <div className="bg-neutral-950 rounded-xl p-3 border border-neutral-800">
-                      <span className="text-neutral-500 block text-[11px]">Parking</span>
+                    <div className="bg-[#121212] rounded-xl p-3 border border-white/30 hover:border-white/70 transition-colors">
+                      <span className="text-neutral-400 block text-[11px]">Parking</span>
                       <span className="font-semibold text-white">{valuation.property_summary.parking}</span>
                     </div>
                   </div>
@@ -313,10 +313,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
                 {/* 4. Statutory Government Benchmark (Circle Rate) */}
                 <div>
-                  <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 block mb-2.5">
+                  <span className="text-xs font-mono uppercase tracking-widest text-neutral-400 block mb-2.5">
                     Official Government Benchmark
                   </span>
-                  <div className="rounded-2xl border border-neutral-800 p-4 space-y-2.5 text-xs font-sans bg-neutral-950">
+                  <div className="rounded-2xl border border-white/30 p-4 space-y-2.5 text-xs font-sans bg-[#121212]">
                     <div className="flex justify-between items-center text-neutral-300">
                       <span className="text-neutral-400">Government Ready Reckoner Circle Rate</span>
                       <span className="font-semibold text-white">
@@ -331,7 +331,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                       </span>
                     </div>
 
-                    <div className="flex justify-between items-center text-neutral-300 pt-2 border-t border-neutral-800">
+                    <div className="flex justify-between items-center text-neutral-300 pt-2 border-t border-white/10">
                       <span className="text-neutral-400">Estimated Stamp Duty & Registration ({valuation.government_benchmark.stamp_duty_pct}%)</span>
                       <span className="font-semibold text-white">
                         {formatDualCurrency(valuation.government_benchmark.stamp_duty_estimate_lakhs).full}
@@ -343,24 +343,24 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 {/* 5. Locality Context Summary */}
                 {valuation.gemini_ai_layer?.livability_summary && (
                   <div>
-                    <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 block mb-1.5">
+                    <span className="text-xs font-mono uppercase tracking-widest text-neutral-400 block mb-1.5">
                       Neighborhood Insight
                     </span>
-                    <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed font-sans bg-neutral-950 rounded-2xl p-4 border border-neutral-800">
+                    <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed font-sans bg-[#121212] rounded-2xl p-4 border border-white/30">
                       {valuation.gemini_ai_layer.livability_summary}
                     </p>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="py-24 text-center text-neutral-500 text-xs font-sans">
+              <div className="py-24 text-center text-neutral-400 text-xs font-sans">
                 Awaiting property details. Enter specifications on the left and click Calculate Fair Value.
               </div>
             )}
           </div>
 
           {/* Footer note */}
-          <div className="pt-6 mt-6 border-t border-neutral-800 flex items-center justify-between text-xs text-neutral-500 font-sans">
+          <div className="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs text-neutral-400 font-sans">
             <span>Verified against registered deeds & ASR circle rates</span>
             <span>Bank-compliant memorandum</span>
           </div>

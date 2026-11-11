@@ -86,30 +86,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
       </section>
 
       {/* Dynamic Animated Statistics Bar (CountUp Component) */}
-      <section className="border-t border-b border-neutral-800/80 bg-neutral-950 py-10">
+      <section className="border-t border-b border-white/20 bg-neutral-950 py-10">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div>
+          <div className="rounded-2xl border border-white/30 bg-[#0A0A0A] p-5 shadow-[0_0_25px_rgba(255,255,255,0.03)] hover:border-white transition-all">
             <div className="font-display text-4xl sm:text-5xl font-black text-white">
               <CountUp to={36} duration={1.8} />
             </div>
             <div className="text-xs text-neutral-400 font-sans mt-1">Maharashtra Districts</div>
           </div>
 
-          <div>
+          <div className="rounded-2xl border border-white/30 bg-[#0A0A0A] p-5 shadow-[0_0_25px_rgba(255,255,255,0.03)] hover:border-white transition-all">
             <div className="font-display text-4xl sm:text-5xl font-black text-white">
               <CountUp to={3500} duration={2} suffix="+" />
             </div>
             <div className="text-xs text-neutral-400 font-sans mt-1">Registered Transactions</div>
           </div>
 
-          <div>
+          <div className="rounded-2xl border border-white/30 bg-[#0A0A0A] p-5 shadow-[0_0_25px_rgba(255,255,255,0.03)] hover:border-white transition-all">
             <div className="font-display text-4xl sm:text-5xl font-black text-white">
               <CountUp to={100} duration={1.5} suffix="%" />
             </div>
             <div className="text-xs text-neutral-400 font-sans mt-1">Official ASR Circle Rate Anchors</div>
           </div>
 
-          <div>
+          <div className="rounded-2xl border border-white/30 bg-[#0A0A0A] p-5 shadow-[0_0_25px_rgba(255,255,255,0.03)] hover:border-white transition-all">
             <div className="font-display text-4xl sm:text-5xl font-black text-white">
               0%
             </div>
