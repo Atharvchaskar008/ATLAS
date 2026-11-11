@@ -1,6 +1,6 @@
 import { PropertyInput, ValuationResult, InfrastructureNode, AppraisalMemorandum } from './types';
 
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '') + '/api';
 
 export async function fetchLocalities(): Promise<{ localities: string[]; registry: Record<string, any>; maharashtra_hubs?: any[] }> {
   try {
