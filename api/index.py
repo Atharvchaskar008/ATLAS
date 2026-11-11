@@ -1,6 +1,6 @@
 import sys
 import os
-import json
+import urllib.parse
 
 # Ensure backend directory is in the Python search path
 backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend"))
@@ -10,27 +10,39 @@ if backend_dir not in sys.path:
 from main import app as fastapi_app
 
 async def app(scope, receive, send):
-    if scope.get("type") == "http":
-        headers = dict(scope.get("headers", []))
-        if b"x-debug" in headers:
-            body = json.dumps({
-                "scope_path": scope.get("path"),
-                "scope_raw_path": scope.get("raw_path", b"").decode("utf-8", "ignore"),
-                "scope_query_string": scope.get("query_string", b"").decode("utf-8", "ignore"),
-                "headers": {k.decode("utf-8", "ignore"): v.decode("utf-8", "ignore") for k, v in headers.items()}
-            }, indent=2).encode("utf-8")
-            await send({
-                "type": "http.response.start",
-                "status": 200,
-                "headers": [
-                    [b"content-type", b"application/json"],
-                    [b"content-length", str(len(body)).encode("utf-8")]
-                ]
-            })
-            await send({
-                "type": "http.response.body",
-                "body": body
-            })
-            return
-            
+    """
+    Vercel Serverless ASGI entrypoint.
+    Unpacks __path__ forwarded by vercel.json rewrite and normalizes scope['path']
+    so FastAPI routes (/api/... or /...) match accurately.
+    """
+    if scope.get("type") in ("http", "websocket"):
+        qs_bytes = scope.get("query_string", b"")
+        qs = qs_bytes.decode("utf-8", errors="ignore")
+        
+        path_param = None
+        if "__path__=" in qs:
+            params = urllib.parse.parse_qsl(qs, keep_blank_values=True)
+            remaining_params = []
+            for k, v in params:
+                if k == "__path__":
+                    path_param = v
+                else:
+                    remaining_params.append((k, v))
+            scope["query_string"] = urllib.parse.urlencode(remaining_params).encode("utf-8")
+        
+        if path_param:
+            clean_sub = urllib.parse.unquote(path_param).lstrip("/")
+            target = f"/api/{clean_sub}"
+        else:
+            raw = scope.get("path", "")
+            if raw in ("/api/index.py", "/index.py", "/api/index", ""):
+                target = "/api"
+            elif not raw.startswith("/api"):
+                target = f"/api{raw}"
+            else:
+                target = raw
+
+        scope["path"] = target
+        scope["raw_path"] = target.encode("utf-8")
+
     await fastapi_app(scope, receive, send)
