@@ -13,7 +13,8 @@ async def app(scope, receive, send):
     """
     Vercel Serverless ASGI entrypoint.
     Unpacks __path__ forwarded by vercel.json rewrite and normalizes scope['path']
-    so FastAPI routes (/api/... or /...) match accurately.
+    so FastAPI routes (/api/... or /...) match accurately, while preserving
+    root and static asset requests for SPA rendering.
     """
     if scope.get("type") in ("http", "websocket"):
         qs_bytes = scope.get("query_string", b"")
@@ -35,12 +36,10 @@ async def app(scope, receive, send):
             target = f"/api/{clean_sub}"
         else:
             raw = scope.get("path", "")
-            if raw in ("/api/index.py", "/index.py", "/api/index", ""):
-                target = "/api"
-            elif not raw.startswith("/api"):
-                target = f"/api{raw}"
+            if raw in ("/api/index.py", "/index.py", "/api/index"):
+                target = "/"
             else:
-                target = raw
+                target = raw or "/"
 
         scope["path"] = target
         scope["raw_path"] = target.encode("utf-8")

@@ -510,22 +510,30 @@ app.include_router(router, prefix="")
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-# Only serve static frontend files if NOT running in Vercel serverless mode
-if not os.environ.get("VERCEL"):
-    frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
-    if os.path.exists(frontend_dist):
-        assets_dir = os.path.join(frontend_dist, "assets")
-        if os.path.exists(assets_dir):
-            app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
+if os.path.exists(frontend_dist):
+    assets_dir = os.path.join(frontend_dist, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
-        @app.get("/{full_path:path}")
-        def serve_frontend_spa(full_path: str):
-            if full_path.startswith("api") or full_path.startswith("valuation") or full_path == "health":
-                raise HTTPException(status_code=404, detail="Not Found")
-            file_path = os.path.join(frontend_dist, full_path)
-            if os.path.exists(file_path) and os.path.isfile(file_path):
-                return FileResponse(file_path)
-            return FileResponse(os.path.join(frontend_dist, "index.html"))
+    @app.get("/")
+    def serve_root():
+        index_file = os.path.join(frontend_dist, "index.html")
+        if os.path.exists(index_file):
+            return FileResponse(index_file)
+        return {"service": "A.T.L.A.S. Engine", "status": "online"}
+
+    @app.get("/{full_path:path}")
+    def serve_frontend_spa(full_path: str):
+        if full_path.startswith("api/") or full_path.startswith("valuation/") or full_path in ("api", "valuation", "health"):
+            raise HTTPException(status_code=404, detail="Not Found")
+        file_path = os.path.join(frontend_dist, full_path)
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        index_file = os.path.join(frontend_dist, "index.html")
+        if os.path.exists(index_file):
+            return FileResponse(index_file)
+        raise HTTPException(status_code=404, detail="Not Found")
 
 
 if __name__ == "__main__":

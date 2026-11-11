@@ -16,3 +16,4 @@ export const CornerCrosses: React.FC = () => {
 };
 
 export default CornerCrosses;
+
