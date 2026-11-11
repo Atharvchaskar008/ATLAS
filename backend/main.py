@@ -39,18 +39,49 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from fastapi import Request
+from starlette.types import ASGIApp, Scope, Receive, Send
+import urllib.parse
 
-@app.middleware("http")
-async def fix_vercel_path(request: Request, call_next):
-    matched = request.headers.get("x-matched-path") or request.headers.get("x-forwarded-uri")
-    if matched:
-        if "?" in matched:
-            matched, qs = matched.split("?", 1)
-        if not matched.startswith("/api"):
-            matched = "/api" + (matched if matched.startswith("/") else "/" + matched)
-        request.scope["path"] = matched
-    return await call_next(request)
+class VercelPathASGIMiddleware:
+    def __init__(self, app: ASGIApp):
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
+        if scope["type"] in ("http", "websocket"):
+            headers = dict(scope.get("headers", []))
+            matched = (
+                headers.get(b"x-matched-path", b"")
+                or headers.get(b"x-forwarded-uri", b"")
+            ).decode("utf-8", errors="ignore")
+            
+            if not matched:
+                route_matches = headers.get(b"x-now-route-matches", b"").decode("utf-8", errors="ignore")
+                if "1=" in route_matches:
+                    for part in route_matches.split("&"):
+                        if part.startswith("1="):
+                            sub = urllib.parse.unquote(part[2:])
+                            matched = "/api/" + sub.lstrip("/")
+                            break
+
+            current_path = scope.get("path", "")
+            if matched:
+                target = matched
+            else:
+                target = current_path
+
+            if "?" in target:
+                target, qs = target.split("?", 1)
+                if not scope.get("query_string"):
+                    scope["query_string"] = qs.encode("utf-8")
+
+            if not target.startswith("/api") and target != "/":
+                target = "/api" + (target if target.startswith("/") else "/" + target)
+
+            scope["path"] = target
+
+        await self.app(scope, receive, send)
+
+app.add_middleware(VercelPathASGIMiddleware)
 
 # Initialize Valuation Engine singleton
 engine = ValuationEngine()
