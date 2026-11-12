@@ -1,6 +1,5 @@
 import React from 'react';
 import { ShieldCheck, TrendingUp, Compass, FileCheck } from 'lucide-react';
-import { CornerCrosses } from './CornerCrosses';
 
 interface StackCard {
   id: string;
@@ -77,9 +76,8 @@ export const ScrollStack: React.FC = () => {
               <div
                 key={card.id}
                 style={{ top: `${topOffset}px` }}
-                className="sticky relative has-crosses rounded-2xl bg-[var(--surface)] text-[var(--ink)] border border-[var(--line)] p-8 sm:p-12 shadow-sm transition-all duration-300 hover:border-[var(--line-strong)]"
+                className="sticky relative rounded-2xl bg-[var(--surface)] text-[var(--ink)] border border-[var(--line)] p-8 sm:p-12 shadow-sm transition-all duration-300 hover:border-[var(--line-strong)]"
               >
-                <CornerCrosses />
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                   {/* Left Column: Story */}
                   <div className="md:col-span-8 space-y-4">

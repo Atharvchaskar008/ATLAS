@@ -4,7 +4,6 @@ import { ScrollStack } from './ScrollStack';
 import { DecryptedText } from './reactbits/DecryptedText';
 import { CountUp } from './reactbits/CountUp';
 import { AsciiArchitecture } from './AsciiArchitecture';
-import { CornerCrosses } from './CornerCrosses';
 
 interface LandingPageProps {
   onLaunchDashboard: () => void;
@@ -79,18 +78,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
           </div>
         </div>
 
-        {/* Right Column: Architectural ASCII Building Elevation (Pure CAD art, zero marketing text) */}
-        <div className="lg:col-span-5">
+        {/* Right Column: Architectural ASCII Building Elevation (Locked proportions, centered) */}
+        <div className="lg:col-span-5 flex items-center justify-center">
           <AsciiArchitecture />
         </div>
       </section>
 
-      {/* Statistics Grid (Architectural Boxed Cells with Corner Crosses) */}
+      {/* Statistics Grid (Clean Architectural Boxed Cells) */}
       <section className="border-t border-b border-[var(--line)] bg-[var(--surface)] py-10 transition-colors duration-250">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           
-          <div className="relative has-crosses rounded-xl border border-[var(--line)] bg-[var(--surface-elevated)] p-5 hover:border-[var(--line-strong)] transition-all">
-            <CornerCrosses />
+          <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-elevated)] p-5 hover:border-[var(--line-strong)] transition-all">
             <div className="font-mono text-3xl sm:text-4xl font-bold text-[var(--ink)] tracking-tight">
               <CountUp to={36} duration={1.8} />
             </div>
@@ -99,8 +97,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
             </div>
           </div>
 
-          <div className="relative has-crosses rounded-xl border border-[var(--line)] bg-[var(--surface-elevated)] p-5 hover:border-[var(--line-strong)] transition-all">
-            <CornerCrosses />
+          <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-elevated)] p-5 hover:border-[var(--line-strong)] transition-all">
             <div className="font-mono text-3xl sm:text-4xl font-bold text-[var(--ink)] tracking-tight">
               <CountUp to={3500} duration={2} suffix="+" />
             </div>
@@ -109,8 +106,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
             </div>
           </div>
 
-          <div className="relative has-crosses rounded-xl border border-[var(--line)] bg-[var(--surface-elevated)] p-5 hover:border-[var(--line-strong)] transition-all">
-            <CornerCrosses />
+          <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-elevated)] p-5 hover:border-[var(--line-strong)] transition-all">
             <div className="font-mono text-3xl sm:text-4xl font-bold text-[var(--ink)] tracking-tight">
               <CountUp to={100} duration={1.5} suffix="%" />
             </div>
@@ -119,8 +115,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
             </div>
           </div>
 
-          <div className="relative has-crosses rounded-xl border border-[var(--line)] bg-[var(--surface-elevated)] p-5 hover:border-[var(--line-strong)] transition-all">
-            <CornerCrosses />
+          <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-elevated)] p-5 hover:border-[var(--line-strong)] transition-all">
             <div className="font-mono text-3xl sm:text-4xl font-bold text-[var(--ink)] tracking-tight">
               0%
             </div>
@@ -132,7 +127,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
         </div>
       </section>
 
-      {/* Two Solution Boxes (Architectural Framing with Corner Crosses) */}
+      {/* Two Solution Boxes (Architectural Framing) */}
       <section id="solution" className="py-24 bg-[var(--canvas)] transition-colors duration-250">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-12 flex items-center justify-between border-b border-[var(--line)] pb-4">
@@ -147,8 +142,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
             {/* Box 1 */}
-            <div className="relative has-crosses rounded-2xl border border-[var(--line)] bg-[var(--surface)] hover:border-[var(--line-strong)] p-8 flex flex-col justify-between transition-all shadow-sm">
-              <CornerCrosses />
+            <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] hover:border-[var(--line-strong)] p-8 flex flex-col justify-between transition-all shadow-sm">
               <div>
                 <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--ink-muted)] block mb-3">
                   01.1 / TRANSACTION PARITY
@@ -167,8 +161,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
             </div>
 
             {/* Box 2 */}
-            <div className="relative has-crosses rounded-2xl border border-[var(--line)] bg-[var(--surface)] hover:border-[var(--line-strong)] p-8 flex flex-col justify-between transition-all shadow-sm">
-              <CornerCrosses />
+            <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] hover:border-[var(--line-strong)] p-8 flex flex-col justify-between transition-all shadow-sm">
               <div>
                 <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--ink-muted)] block mb-3">
                   01.2 / LEGAL TRANSPARENCY

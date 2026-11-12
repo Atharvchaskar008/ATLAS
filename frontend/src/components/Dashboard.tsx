@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { ValuationResult } from '../types';
 import { parsePropertyChat } from '../api';
 import { Paperclip, X, ArrowRight, Printer, Check, FileText } from 'lucide-react';
-import { CornerCrosses } from './CornerCrosses';
 
 interface DashboardProps {
   onBackToLanding: () => void;
@@ -86,9 +85,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* BOX 1: INPUT BOX (Left Column: 5 Cols) */}
-        <section className="relative has-crosses lg:col-span-5 bg-[var(--surface)] rounded-2xl border border-[var(--line)] hover:border-[var(--line-strong)] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 shadow-sm">
-          <CornerCrosses />
-
+        <section className="relative lg:col-span-5 bg-[var(--surface)] rounded-2xl border border-[var(--line)] hover:border-[var(--line-strong)] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 shadow-sm">
           <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between pb-4 border-b border-[var(--line)]">
@@ -152,7 +149,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   className="border border-dashed border-[var(--line)] hover:border-[var(--line-strong)] rounded-xl p-3.5 cursor-pointer flex items-center justify-center space-x-2 text-xs font-sans text-[var(--ink-secondary)] hover:text-[var(--ink)] bg-[var(--surface-elevated)] transition-all"
                 >
                   <Paperclip className="w-3.5 h-3.5 text-[var(--ink-muted)]" />
-                  <span>Attach floor plan, deed, or 7/12 extract (Optional)</span>
+                  <span>Add additional details</span>
                 </label>
               )}
             </div>
@@ -177,9 +174,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
 
         {/* BOX 2: OUTPUT BOX (Right Column: 7 Cols) */}
-        <section className="relative has-crosses lg:col-span-7 bg-[var(--surface)] rounded-2xl border border-[var(--line)] hover:border-[var(--line-strong)] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 min-h-[520px] shadow-sm">
-          <CornerCrosses />
-
+        <section className="relative lg:col-span-7 bg-[var(--surface)] rounded-2xl border border-[var(--line)] hover:border-[var(--line-strong)] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 min-h-[520px] shadow-sm">
           <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between pb-4 border-b border-[var(--line)]">
@@ -231,8 +226,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   const rangeMax = formatDualCurrency(valuation.value_range_lakhs.max);
 
                   return (
-                    <div className="relative has-crosses rounded-xl p-6 border border-[var(--line)] bg-[var(--surface-elevated)] transition-colors">
-                      <CornerCrosses />
+                    <div className="rounded-xl p-6 border border-[var(--line)] bg-[var(--surface-elevated)] transition-colors">
                       <span className="text-[11px] font-mono uppercase tracking-widest text-[var(--ink-muted)] block mb-1">
                         ESTIMATED FAIR MARKET VALUE
                       </span>

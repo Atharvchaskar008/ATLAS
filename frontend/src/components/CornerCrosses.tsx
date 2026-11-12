@@ -1,19 +1,11 @@
 import React from 'react';
 
 /**
- * Architectural corner crosses matching the Arccheo / SAKER visual design system.
- * Subtly scales on card hover.
+ * CornerCrosses component disabled per user design request.
+ * Returns null to eliminate all '+' corner crosses across the entire UI.
  */
 export const CornerCrosses: React.FC = () => {
-  return (
-    <>
-      <span className="corner-cross corner-cross-tl" aria-hidden="true" />
-      <span className="corner-cross corner-cross-tr" aria-hidden="true" />
-      <span className="corner-cross corner-cross-bl" aria-hidden="true" />
-      <span className="corner-cross corner-cross-br" aria-hidden="true" />
-    </>
-  );
+  return null;
 };
 
 export default CornerCrosses;
-

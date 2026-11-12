@@ -1,6 +1,5 @@
 import React from 'react';
-import { ArrowUpRight, Sun, Moon } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { ArrowUpRight } from 'lucide-react';
 
 interface NavbarProps {
   viewMode: 'landing' | 'dashboard';
@@ -12,7 +11,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   viewMode,
   onViewChange,
 }) => {
-  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-50 bg-[var(--canvas)]/85 backdrop-blur-md border-b border-[var(--line)] transition-colors duration-250">
@@ -66,20 +64,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>GitHub</span>
             <ArrowUpRight className="w-3 h-3" />
           </a>
-
-          {/* Theme Toggle (Dark / Light Mode) */}
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            className="w-8 h-8 rounded-full border border-[var(--line)] hover:border-[var(--line-strong)] flex items-center justify-center text-[var(--ink-secondary)] hover:text-[var(--ink)] transition-all bg-[var(--surface)]"
-          >
-            {theme === 'dark' ? (
-              <Sun className="w-3.5 h-3.5" />
-            ) : (
-              <Moon className="w-3.5 h-3.5" />
-            )}
-          </button>
 
           {/* Action CTA */}
           {viewMode === 'landing' ? (
