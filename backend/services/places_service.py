@@ -16,42 +16,93 @@ GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")
 
 # Calibrated statewide landmark nodes across all major Maharashtra districts
 MAHARASHTRA_SURROUNDING_LANDMARKS: List[Dict[str, Any]] = [
-    # Mumbai Transit & Commercial
+    # --- South & Central Mumbai (Mazgaon, Byculla, Fort, Parel, Dadar) ---
+    {"name": "Dockyard Road Railway Station (Harbour Line)", "type": "transit", "category": "railway", "lat": 18.9686, "lng": 72.8436},
+    {"name": "Sandhurst Road Railway Station (Central & Harbour)", "type": "transit", "category": "railway", "lat": 18.9615, "lng": 72.8402},
+    {"name": "Byculla Railway Station (Central Line)", "type": "transit", "category": "railway", "lat": 18.9774, "lng": 72.8335},
+    {"name": "Reay Road Railway Station (Harbour Line)", "type": "transit", "category": "railway", "lat": 18.9818, "lng": 72.8475},
+    {"name": "Cotton Green Railway Station", "type": "transit", "category": "railway", "lat": 18.9867, "lng": 72.8480},
+    {"name": "Mumbai Central Railway & Metro Station (Line 3 Aqua Line)", "type": "transit", "category": "railway", "lat": 18.9712, "lng": 72.8197},
+    {"name": "Chhatrapati Shivaji Maharaj Terminus (CSMT)", "type": "transit", "category": "railway", "lat": 18.9400, "lng": 72.8353},
+    {"name": "Churchgate Railway Station (Western Line)", "type": "transit", "category": "railway", "lat": 18.9322, "lng": 72.8264},
+    {"name": "Lower Parel & Prabhadevi Commercial Hub", "type": "commercial", "category": "it_hub", "lat": 18.9953, "lng": 72.8306},
+    {"name": "Currey Road / Parel Railway Interchange", "type": "transit", "category": "railway", "lat": 18.9984, "lng": 72.8355},
+    {"name": "Dadar Junction (Central & Western Railway Interchange)", "type": "transit", "category": "railway", "lat": 19.0178, "lng": 72.8478},
+    {"name": "Wadala Road Railway & Monorail Terminal", "type": "transit", "category": "railway", "lat": 19.0163, "lng": 72.8587},
+    {"name": "Nariman Point & Fort Financial District", "type": "commercial", "category": "it_hub", "lat": 18.9256, "lng": 72.8242},
+
+    # --- Mumbai Western & Northern Suburbs ---
     {"name": "Bandra-Kurla Complex (BKC)", "type": "commercial", "category": "it_hub", "lat": 19.0657, "lng": 72.8683},
+    {"name": "Bandra Western Railway Station", "type": "transit", "category": "railway", "lat": 19.0544, "lng": 72.8402},
     {"name": "Bandra Terminus Railway Station", "type": "transit", "category": "railway", "lat": 19.0620, "lng": 72.8420},
+    {"name": "Kurla Junction (Central & Harbour Interchange)", "type": "transit", "category": "railway", "lat": 19.0653, "lng": 72.8794},
+    {"name": "Ghatkopar Metro & Railway Interchange (Line 1)", "type": "transit", "category": "railway", "lat": 19.0864, "lng": 72.9081},
+    {"name": "Chembur Monorail & Railway Station", "type": "transit", "category": "railway", "lat": 19.0625, "lng": 72.8997},
     {"name": "Versova Metro Station (Line 1)", "type": "transit", "category": "metro", "lat": 19.1310, "lng": 72.8170},
     {"name": "Andheri Railway & Metro Interchange", "type": "transit", "category": "railway", "lat": 19.1197, "lng": 72.8464},
+    {"name": "Goregaon Railway & Metro Station", "type": "transit", "category": "railway", "lat": 19.1646, "lng": 72.8493},
+    {"name": "Malad Railway & Metro Station", "type": "transit", "category": "railway", "lat": 19.1874, "lng": 72.8485},
+    {"name": "Kandivali Railway Station", "type": "transit", "category": "railway", "lat": 19.2047, "lng": 72.8525},
+    {"name": "Borivali Railway & Outstation Terminus", "type": "transit", "category": "railway", "lat": 19.2290, "lng": 72.8570},
+    {"name": "Dahisar Check Naka & Metro Terminal", "type": "transit", "category": "metro", "lat": 19.2570, "lng": 72.8590},
     {"name": "Chhatrapati Shivaji Maharaj International Airport (BOM)", "type": "transit", "category": "airport", "lat": 19.0896, "lng": 72.8656},
+    {"name": "IIT Bombay Powai / Hiranandani Tech Hub", "type": "education", "category": "university", "lat": 19.1334, "lng": 72.9133},
     {"name": "Lilavati Hospital & Research Centre Bandra", "type": "health", "category": "hospital", "lat": 19.0515, "lng": 72.8290},
     {"name": "Kokilaben Dhirubhai Ambani Hospital Andheri", "type": "health", "category": "hospital", "lat": 19.1312, "lng": 72.8248},
-    {"name": "IIT Bombay Powai", "type": "education", "category": "university", "lat": 19.1334, "lng": 72.9133},
-    {"name": "Inorbit Mall Vashi (Navi Mumbai)", "type": "commercial", "category": "mall", "lat": 19.0650, "lng": 72.9990},
+
+    # --- Thane & Navi Mumbai ---
+    {"name": "Thane Central Railway Station", "type": "transit", "category": "railway", "lat": 19.1860, "lng": 72.9754},
+    {"name": "Mulund Railway Station", "type": "transit", "category": "railway", "lat": 19.1726, "lng": 72.9564},
+    {"name": "Kalyan Junction Central Railway Hub", "type": "transit", "category": "railway", "lat": 19.2437, "lng": 73.1355},
+    {"name": "Dombivli Railway Station", "type": "transit", "category": "railway", "lat": 19.2184, "lng": 73.0867},
+    {"name": "Vashi Railway & Commercial Terminal", "type": "transit", "category": "railway", "lat": 19.0771, "lng": 72.9986},
+    {"name": "Belapur CBD Railway & Metro Interchange", "type": "transit", "category": "railway", "lat": 19.0183, "lng": 73.0392},
+    {"name": "Panvel Junction Railway & Outstation Terminus", "type": "transit", "category": "railway", "lat": 18.9902, "lng": 73.1219},
+    {"name": "Nerul Railway & LP Junction", "type": "transit", "category": "railway", "lat": 19.0330, "lng": 73.0180},
+    {"name": "Airoli Mindspace IT Park & Railway Station", "type": "commercial", "category": "it_hub", "lat": 19.1580, "lng": 72.9990},
     {"name": "Navi Mumbai International Airport (NMIA)", "type": "transit", "category": "airport", "lat": 18.9900, "lng": 73.0700},
     {"name": "Viviana Mall Thane", "type": "commercial", "category": "mall", "lat": 19.2080, "lng": 72.9720},
 
-    # Pune & PCMC Transit & Tech
+    # --- Pune & PCMC ---
+    {"name": "Pune Junction Railway Station", "type": "transit", "category": "railway", "lat": 18.5284, "lng": 73.8744},
+    {"name": "Shivajinagar Railway & Metro Station", "type": "transit", "category": "railway", "lat": 18.5326, "lng": 73.8524},
+    {"name": "Swargate Multi-Modal Metro & ST Transit Hub", "type": "transit", "category": "metro", "lat": 18.5015, "lng": 73.8580},
+    {"name": "Pune International Airport (Lohegaon / PNQ)", "type": "transit", "category": "airport", "lat": 18.5822, "lng": 73.9197},
+    {"name": "Chinchwad Railway Station", "type": "transit", "category": "railway", "lat": 18.6366, "lng": 73.7905},
+    {"name": "Pimpri Railway Station", "type": "transit", "category": "railway", "lat": 18.6277, "lng": 73.7997},
+    {"name": "Akurdi Railway Station", "type": "transit", "category": "railway", "lat": 18.6490, "lng": 73.7710},
+    {"name": "PCMC Metro Station (Line 1)", "type": "transit", "category": "metro", "lat": 18.6298, "lng": 73.8131},
+    {"name": "Bhosari (Nashik Phata) Metro Interchange (Line 1)", "type": "transit", "category": "metro", "lat": 18.6180, "lng": 73.8260},
+    {"name": "Proposed Moshi Spine Rd Metro Extension / Bus Terminal", "type": "transit", "category": "metro", "lat": 18.6690, "lng": 73.8410},
+    {"name": "Wakad Chowk Metro (Line 3)", "type": "transit", "category": "metro", "lat": 18.6012, "lng": 73.7665},
     {"name": "Hinjawadi Rajiv Gandhi IT Park (Phase 1/2/3)", "type": "commercial", "category": "it_hub", "lat": 18.5955, "lng": 73.7442},
     {"name": "EON Free Zone IT Park Kharadi", "type": "commercial", "category": "it_hub", "lat": 18.5512, "lng": 73.9510},
     {"name": "Magarpatta Cybercity Hadapsar", "type": "commercial", "category": "it_hub", "lat": 18.5135, "lng": 73.9295},
     {"name": "Bhosari MIDC Auto Corridor (Tata Motors)", "type": "commercial", "category": "industrial", "lat": 18.6350, "lng": 73.8520},
-    {"name": "Wakad Chowk Metro (Line 3)", "type": "transit", "category": "metro", "lat": 18.6012, "lng": 73.7665},
-    {"name": "PCMC Metro Station (Line 1)", "type": "transit", "category": "metro", "lat": 18.6298, "lng": 73.8131},
-    {"name": "Proposed Moshi Spine Rd Metro Extension", "type": "transit", "category": "metro", "lat": 18.6690, "lng": 73.8410},
+    {"name": "Chakan MIDC Industrial Corridor", "type": "commercial", "category": "industrial", "lat": 18.7550, "lng": 73.8590},
+    {"name": "Talawade IT Park PCMC", "type": "commercial", "category": "it_hub", "lat": 18.6880, "lng": 73.7850},
     {"name": "Jupiter Hospital Baner", "type": "health", "category": "hospital", "lat": 18.5540, "lng": 73.7880},
     {"name": "Aditya Birla Memorial Hospital Chinchwad", "type": "health", "category": "hospital", "lat": 18.6210, "lng": 73.7810},
     {"name": "Phoenix Mall of the Millennium Wakad", "type": "commercial", "category": "mall", "lat": 18.6045, "lng": 73.7580},
     {"name": "Balewadi High Street", "type": "commercial", "category": "mall", "lat": 18.5720, "lng": 73.7740},
 
-    # Nashik, Nagpur & Regional Hubs
-    {"name": "Nashik City Centre Mall", "type": "commercial", "category": "mall", "lat": 19.9880, "lng": 73.7680},
+    # --- Nashik, Nagpur & Regional Maharashtra Hubs ---
+    {"name": "Nashik Road Central Railway Station", "type": "transit", "category": "railway", "lat": 19.9540, "lng": 73.8420},
     {"name": "Ambad MIDC Nashik (Bosch / Mahindra)", "type": "commercial", "category": "industrial", "lat": 19.9550, "lng": 73.7450},
+    {"name": "Nashik City Centre Mall", "type": "commercial", "category": "mall", "lat": 19.9880, "lng": 73.7680},
+    {"name": "Nagpur Junction Central Railway Station", "type": "transit", "category": "railway", "lat": 21.1520, "lng": 79.0880},
+    {"name": "Sitabuldi Metro Interchange Nagpur", "type": "transit", "category": "metro", "lat": 21.1460, "lng": 79.0830},
     {"name": "Nagpur Metro Orange Line Terminal", "type": "transit", "category": "metro", "lat": 21.1200, "lng": 79.0550},
     {"name": "MIHAN SEZ Nagpur (Infosys, TCS, Boeing)", "type": "commercial", "category": "it_hub", "lat": 21.0720, "lng": 79.0550},
     {"name": "AIIMS Nagpur", "type": "health", "category": "hospital", "lat": 21.0450, "lng": 79.0300},
-    {"name": "Prozone Mall Chhatrapati Sambhajinagar", "type": "commercial", "category": "mall", "lat": 19.8780, "lng": 75.3680},
+    {"name": "Chhatrapati Sambhajinagar Central Railway Station", "type": "transit", "category": "railway", "lat": 19.8630, "lng": 75.3190},
     {"name": "AURIC Smart City Shendra", "type": "commercial", "category": "it_hub", "lat": 19.8650, "lng": 75.5200},
+    {"name": "Prozone Mall Chhatrapati Sambhajinagar", "type": "commercial", "category": "mall", "lat": 19.8780, "lng": 75.3680},
+    {"name": "Kolhapur CSMT (Chhatrapati Shahu Maharaj Terminus)", "type": "transit", "category": "railway", "lat": 16.7020, "lng": 74.2410},
     {"name": "Shivaji University Kolhapur", "type": "education", "category": "university", "lat": 16.6780, "lng": 74.2560},
-    {"name": "Gokul Shirgaon MIDC Kolhapur", "type": "commercial", "category": "industrial", "lat": 16.6340, "lng": 74.2850}
+    {"name": "Gokul Shirgaon MIDC Kolhapur", "type": "commercial", "category": "industrial", "lat": 16.6340, "lng": 74.2850},
+    {"name": "Solapur Central Railway Station", "type": "transit", "category": "railway", "lat": 17.6599, "lng": 75.9064},
+    {"name": "Amravati Railway Station", "type": "transit", "category": "railway", "lat": 20.9320, "lng": 77.7520}
 ]
 
 
