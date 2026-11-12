@@ -113,7 +113,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 rows={9}
-                placeholder="Type or paste property details in simple words...&#10;&#10;e.g., 1 RK flat in Mazgaon Hattibaugh area, 300 sqft on 2nd floor with parking and lift&#10;or 2 BHK apartment in Moshi, Pune, 600 sqft on 2nd floor with covered parking&#10;or 3 BHK penthouse in Bandra West 1200 sqft on 14th floor with 2 covered parkings"
+                placeholder="Describe the property in natural words...&#10;&#10;e.g., 2 BHK apartment in Moshi, Pune, 600 sqft on 2nd floor with covered parking&#10;or 3 BHK in Bandra West, 1200 sqft on 14th floor with 2 parkings and sea view&#10;or 1 BHK flat near Metro Station in Wakad, 450 sqft with lift and parking"
                 className="w-full text-sm font-sans leading-relaxed text-[var(--ink)] placeholder:text-[var(--ink-muted)] bg-[var(--surface-elevated)] rounded-xl p-4 border border-[var(--line)] focus:border-[var(--line-strong)] focus:outline-none transition-all resize-none"
               />
             </div>
